@@ -1,47 +1,20 @@
 import * as joint from 'jointjs'
 import { Model } from 'pinia-orm'
-import { A } from 'pinia-orm/dist/Data-77556be8'
-import { Attr, Num, Str, Uid } from 'pinia-orm/dist/decorators'
+import { Attr, HasMany, Num, Str, Uid } from 'pinia-orm/dist/decorators'
+import Port from './Port'
 
 export default class Block extends Model {
   static entity = 'blocks'
 
   @Uid() declare id: string
-  @Uid() declare method_id: string
+  @Uid() declare method_id?: string
   @Str('') declare name: string
   @Num(0) declare top: number
   @Num(0) declare left: number
-  @Attr([]) declare flow_in: {
-    id: string
-    type: string
-    name: string
-    block_id: string
-  }[]
-  @Attr([]) declare flow_out: {
-    id: string
-    type: string
-    name: string
-    block_id: string
-  }[]
-  @Attr([]) declare params_in: {
-    id: string
-    type: string
-    name: string
-    block_id: string
-  }[]
-  @Attr([]) declare params_out: {
-    id: string
-    type: string
-    name: string
-    block_id: string
-  }[];
+  @HasMany(() => Port, 'block_id', 'id') declare ports: Port[]
 
-  get in() {
-    return this.flow_in.concat(this.params_in)
-  }
-
-  get out() {
-    return this.flow_out.concat(this.params_out)
+  get connectedPorts() {
+    return this.ports.filter((port: Port) => port.connected_to)
   }
 
   get inPort() {
@@ -145,19 +118,11 @@ export default class Block extends Model {
         }
       }
     })
-
+    
     shape.addPorts(
-      this.in.map((port, index) => ({
+      this.ports.map((port: Port, index) => ({
         id: port.id,
-        group: 'in',
-        attrs: { label: { text: port.name } }
-      }))
-    )
-
-    shape.addPorts(
-      this.out.map((port, index) => ({
-        id: port.id,
-        group: 'out',
+        group: port.direction,
         attrs: { label: { text: port.name } }
       }))
     )

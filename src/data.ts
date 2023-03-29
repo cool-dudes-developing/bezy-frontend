@@ -1,5 +1,5 @@
 // Mock backend data
-export default [
+const users = [
   {
     id: 'user1',
     name: 'John Doe',
@@ -22,17 +22,16 @@ export default [
                 name: 'Start',
                 top: 10,
                 left: 10,
-                flow_in: [],
-                flow_out: [
+                ports: [
                   {
-                    id: 'flow_out1',
+                    id: 'port_start',
+                    block_id: 'block_start',
+                    connected_to: 'port_end',
+                    name: 'Start',
                     type: 'flow',
-                    name: 'next',
-                    block_id: 'block1'
+                    direction: 'out'
                   }
-                ],
-                params_in: [],
-                params_out: []
+                ]
               },
               {
                 id: 'block_end',
@@ -40,54 +39,55 @@ export default [
                 name: 'End',
                 top: 10,
                 left: 400,
-                flow_in: [
+                ports: [
                   {
-                    id: 'flow_in1',
+                    id: 'port_end',
+                    block_id: 'block_end',
+                    connected_to: 'port_start',
+                    name: 'End',
                     type: 'flow',
-                    name: 'end',
-                    block_id: 'block1'
-                  }
-                ],
-                flow_out: [],
-                params_in: [
+                    direction: 'in'
+                  },
                   {
-                    id: 'param_in1',
-                    type: 'string',
-                    name: 'message',
-                    block_id: 'block1'
+                    id: 'port_end_response',
+                    block_id: 'block_end',
+                    connected_to: 'port1',
+                    name: 'Response',
+                    type: 'data',
+                    direction: 'in'
                   }
-                ],
-                params_out: []
+                ]
               },
               {
                 id: 'block1',
                 method_id: 'method1',
-                name: 'Test string',
-                top: 10,
+                name: 'Const string',
+                top: 120,
                 left: 200,
-                params_in: [],
-                params_out: [
+                ports: [
                   {
-                    id: 'param_out1',
-                    type: 'string',
-                    name: 'message',
-                    block_id: 'block_end'
+                    id: 'port1',
+                    block_id: 'block1',
+                    connected_to: 'port_end_response',
+                    name: 'String',
+                    type: 'data',
+                    direction: 'out'
                   }
                 ]
               },
               {
                 id: 'block2',
                 method_id: 'method1',
-                name: 'Test int',
-                top: 130,
-                left: 200,
-                params_in: [],
-                params_out: [
+                name: 'Const int',
+                top: 230,
+                left: 10,
+                ports: [
                   {
-                    id: 'param_out2',
-                    type: 'string',
-                    name: 'message',
-                    block_id: 'block_end'
+                    id: 'port2',
+                    block_id: 'block2',
+                    name: 'Int',
+                    type: 'data',
+                    direction: 'out'
                   }
                 ]
               }
@@ -114,3 +114,5 @@ export default [
     ]
   }
 ]
+
+export default { users }

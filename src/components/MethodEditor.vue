@@ -10,12 +10,16 @@ import { useRepo } from 'pinia-orm'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import * as _ from 'lodash'
+import Port from '@/models/Port'
 
 const container = ref<HTMLElement | null>(null)
 const route = computed(() => useRoute())
+const portRepo = computed(() => useRepo(Port))
+const blockRepo = computed(() => useRepo(Block))
 const blocks = computed(() =>
-  useRepo(Block)
+  blockRepo.value
     .where('method_id', route.value.params.method as string)
+    .withAll()
     .get()
 )
 
@@ -52,24 +56,42 @@ onMounted(() => {
     ) {
       // Prevent linking from input ports
       if (magnetS && magnetS.getAttribute('port-group') === 'in') return false
+
       // Prevent linking from output ports to input ports within one element
       if (cellViewS === cellViewT) return false
+
       // Prevent linking if input port is already connected
       if (magnetT && magnetT.getAttribute('port-group') === 'in') {
-        const portId = magnetT.getAttribute('port')
+        // target port id
+        const targetPortId = magnetT.getAttribute('port')
+
+        // target connected links
         const links = graph.getConnectedLinks(cellViewT.model, {
           inbound: true
         })
-        if (links.find((link) => link.get('target').port === portId))
+
+        // check if any of the links has the same target port
+        if (links.find((link) => link.get('target').port === targetPortId))
           return false
+
+        // check if type of source port is the same as target port
+        const sourcePortId = magnetS.getAttribute('port')
+
+        const sourcePort = portRepo.value.find(sourcePortId as string)
+        const targetPort = portRepo.value.find(targetPortId as string)
+
+        // check if ports exist in storage
+        if (!sourcePort || !targetPort) return false
+
+        // check if types are the same
+        if (sourcePort.type !== targetPort.type) return false
+
         return true
       }
       // Prevent linking to output ports
       return magnetT && magnetT.getAttribute('port-group') === 'in'
     },
     validateMagnet: function (cellView, magnet) {
-      console.log('validateMagnet', cellView, magnet)
-
       // Prevent links from ports that already have a link
       var port = magnet.getAttribute('port')
       var links = graph.getConnectedLinks(cellView.model, {
@@ -88,7 +110,35 @@ onMounted(() => {
     }
   })
 
+  console.log('Initializing building blocks')
   graph.addCells(blocks.value.map((block) => block.buildingShape))
+  console.log(
+    'Building blocks initialized, count: ',
+    graph.getElements().length
+  )
+  if (blocks.value.length !== graph.getElements().length) {
+    console.error('Building blocks count mismatch')
+  }
+
+  console.log('Initializing links')
+  graph.getElements().forEach((cell) => {
+    const block = blockRepo.value.with('ports').find(cell.id)
+    if (!block) return
+    const ports = block.connectedPorts
+    ports.forEach((port) => {
+      if (port.direction === 'out') {
+        const sourcePort = portRepo.value.find(port.connected_to)
+        const link = new joint.shapes.standard.Link()
+        link.source({ id: cell.id, port: port.id })
+        link.target({
+          id: sourcePort.block_id,
+          port: sourcePort.id
+        })
+        graph.addCell(link)
+      }
+    })
+  })
+  console.log('Links initialized, count: ', graph.getLinks().length)
 
   // Register events
   paper.on('link:mouseenter', (linkView) => {
@@ -99,7 +149,7 @@ onMounted(() => {
     linkView.removeTools()
   })
 
-  graph.on('change:position', function (cell) {
+  graph.on('change:position', function (cell: any) {
     const position = cell.getBBox()
     useRepo(Block).save({
       id: cell.id,
@@ -108,7 +158,7 @@ onMounted(() => {
     })
   })
 
-  graph.on('change:source change:target', function (link) {
+  graph.on('change:source change:target', function (link: any) {
     if (link.get('source').id && link.get('target').id) {
       // both ends of the link are connected.
       const source = link.get('source')
@@ -118,22 +168,47 @@ onMounted(() => {
         `Link from ${source.id}:${source.port} to ${target.id}:${target.port} was created.`
       )
 
-      // if (Math.floor(Math.random() * 100) < 50) {
-      //   // 50% chance to remove link
-      //   // TODO: remove this code later, it's just for testing
-      //   console.log('Link removed due to random chance.')
-      //   link.remove()
-      // }
+      const sourcePort = portRepo.value.find(source.port as string)
+      const targetPort = portRepo.value.find(target.port as string)
+
+      if (sourcePort && targetPort) {
+        useRepo(Port).save({
+          id: sourcePort.id,
+          connected_to: targetPort.id
+        })
+      }
     }
   })
 
-  graph.on('remove', function (cell) {
+  graph.on('remove', function (cell: any) {
     if (cell.isLink()) {
       const source = cell.get('source')
       const target = cell.get('target')
       console.log(
         `Link from ${source.id}:${source.port} to ${target.id}:${target.port} was removed.`
       )
+
+      const sourcePort = portRepo.value.find(source.port as string)
+      if (sourcePort) {
+        useRepo(Port).save({
+          id: sourcePort.id,
+          connected_to: null
+        })
+      }
+
+      // check if target id or target port is undefined
+      if (!target.id || !target.port) {
+        // TODO: initiate block creation dialog
+        console.log('Block creation dialog initialization')
+      }
+
+      const targetPort = portRepo.value.find(target.port as string)
+      if (targetPort) {
+        useRepo(Port).save({
+          id: targetPort.id,
+          connected_to: null
+        })
+      }
     }
   })
 

@@ -14,5 +14,5 @@ import data from './data'
 import { computed } from 'vue'
 
 const userRepo = computed(() => useRepo(User))
-userRepo.value.save(data)
+userRepo.value.save(data.users)
 </script>
