@@ -115,4 +115,19 @@ const users = [
   }
 ]
 
+const blocks = [
+  {
+    id: 'template_const_string',
+    name: 'Const string',
+    ports: [
+      {
+        id: 'template_const_string_port1',
+        name: 'String',
+        type: 'data',
+        direction: 'out'
+      }
+    ]
+  }
+]
+
 export default { users }

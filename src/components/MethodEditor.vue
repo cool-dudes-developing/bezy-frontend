@@ -4,12 +4,14 @@
   <pre>{{ blocks }}</pre>
 </template>
 <script lang="ts" setup>
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Block from '@/models/Block'
 import * as joint from 'jointjs'
 import { useRepo } from 'pinia-orm'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import Port from '@/models/Port'
 
 const container = ref<HTMLElement | null>(null)
