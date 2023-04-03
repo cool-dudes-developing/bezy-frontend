@@ -1,7 +1,55 @@
 <template>
   <h2>Editor</h2>
   <div id="container" ref="container"></div>
-  <pre>{{ blocks }}</pre>
+  <div class="flex flex-row w-full">
+    <pre>{{ blocks }}</pre>
+    <div class="flex-grow">
+      <h1>Template blocks</h1>
+      <div
+        v-for="block in templateBlocks"
+        :key="block.id"
+        class="bg-red-400 rounded w-full p-3 my-3"
+      >
+        <div class="flex justify-between">
+          <h3>{{ block.name }}</h3>
+          <button
+            class="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+            @click="addTemplateBlock(block)"
+          >
+            add
+          </button>
+        </div>
+        <div class="flex justify-evenly">
+          <div>
+            <h3>Input</h3>
+            <div
+              v-for="input in block.ports.filter(
+                (port) => port.direction === 'in'
+              )"
+              :key="input.id"
+              class="w-full"
+            >
+              {{ input.name }}
+              <span class="bg-blue-400 rounded p-1">{{ input.type }}</span>
+            </div>
+          </div>
+          <div>
+            <h3>Output</h3>
+            <div
+              v-for="input in block.ports.filter(
+                (port) => port.direction === 'out'
+              )"
+              :key="input.id"
+              class="w-full"
+            >
+              {{ input.name }}
+              <span class="bg-blue-400 rounded p-1">{{ input.type }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -13,26 +61,53 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import _ from 'lodash'
 import Port from '@/models/Port'
+import Method from '@/models/Method'
 
 const container = ref<HTMLElement | null>(null)
 const route = computed(() => useRoute())
 const portRepo = computed(() => useRepo(Port))
 const blockRepo = computed(() => useRepo(Block))
+const templateBlocks = computed(() =>
+  blockRepo.value.where('method_id', null).get()
+)
 const blocks = computed(() =>
   blockRepo.value
     .where('method_id', route.value.params.method as string)
     .withAll()
     .get()
 )
+const method = computed(() =>
+  useRepo(Method)
+    .withAllRecursive()
+    .find(route.value.params.method as string)
+)
+
+function addTemplateBlock(block: Block) {
+  console.log('addTemplateBlock', block)
+
+  const newBlock = blockRepo.value.save({
+    name: block.name,
+    method_id: method.value.id,
+    top: 100,
+    left: 100,
+    ports: block.ports.map((port) => {
+      return {
+        name: port.name,
+        type: port.type,
+        direction: port.direction
+      }
+    })
+  })
+
+  graph.addCell(newBlock.buildingShape)
+}
+const namespace = joint.shapes
+const graph = new joint.dia.Graph({}, { cellNamespace: namespace })
 
 onMounted(() => {
-  let namespace = joint.shapes
-
-  const graph = new joint.dia.Graph({}, { cellNamespace: namespace })
-
   const paper = new joint.dia.Paper({
     el: document.getElementById('container'),
-    width: '800',
+    width: '100%',
     height: 400,
     model: graph,
     gridSize: 5,
@@ -151,6 +226,23 @@ onMounted(() => {
     linkView.removeTools()
   })
 
+  paper.on('element:mouseenter', (elementView) => {
+    elementView.addTools(
+      new joint.dia.ToolsView({
+        tools: [
+          new joint.linkTools.Boundary(),
+          new joint.linkTools.Remove({
+            distance: 20
+          })
+        ]
+      })
+    )
+  })
+
+  paper.on('element:mouseleave', (elementView) => {
+    elementView.removeTools()
+  })
+
   graph.on('change:position', function (cell: any) {
     const position = cell.getBBox()
     useRepo(Block).save({
@@ -183,6 +275,10 @@ onMounted(() => {
   })
 
   graph.on('remove', function (cell: any) {
+    if (cell.isElement()) {
+      useRepo(Block).destroy(cell.id)
+    }
+
     if (cell.isLink()) {
       const source = cell.get('source')
       const target = cell.get('target')

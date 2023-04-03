@@ -1,6 +1,6 @@
 <template>
   <h1>method</h1>
-  <div class="container" v-if="method">
+  <div class="w-full" v-if="method">
     <!-- <method-editor-component :blocks="method.blocks" /> -->
     <method-editor/>
   </div>
@@ -23,9 +23,4 @@ const method = computed(() =>
 )
 </script>
 <style scoped>
-.container{
-  position: relative;
-  width: 600px;
-  height: 600px;
-}
 </style>
