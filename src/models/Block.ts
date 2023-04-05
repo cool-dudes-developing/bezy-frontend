@@ -7,7 +7,7 @@ export default class Block extends Model {
   static entity = 'blocks'
 
   @Uid() declare id: string
-  @Uid() declare method_id?: string
+  @Attr(null) declare method_id?: string
   @Str('') declare name: string
   @Num(0) declare top: number
   @Num(0) declare left: number

@@ -8,9 +8,12 @@ import { RouterLink, RouterView } from 'vue-router'
 import User from './models/User'
 import data from './data'
 import { computed } from 'vue'
+import Block from './models/Block'
 
 const userRepo = computed(() => useRepo(User))
+const blockRepo = computed(() => useRepo(Block))
 userRepo.value.save(data.users)
+blockRepo.value.save(data.blocks)
 </script>
 
 <style>

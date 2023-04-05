@@ -115,4 +115,43 @@ const users = [
   }
 ]
 
-export default { users }
+const blocks = [
+  {
+    id: 'template_const_string',
+    name: 'Const string',
+    ports: [
+      {
+        id: 'template_const_string_port1',
+        name: 'String',
+        type: 'data',
+        direction: 'out'
+      }
+    ]
+  },
+  {
+    id: 'template_concat_string',
+    name: 'Concat string',
+    ports: [
+      {
+        id: 'template_concat_string_port1',
+        name: 'String 1',
+        type: 'data',
+        direction: 'in'
+      },
+      {
+        id: 'template_concat_string_port2',
+        name: 'String 2',
+        type: 'data',
+        direction: 'in'
+      },
+      {
+        id: 'template_concat_string_port3',
+        name: 'String',
+        type: 'data',
+        direction: 'out'
+      }
+    ]
+  }
+]
+
+export default { users, blocks }
