@@ -20,6 +20,26 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "hub" */ '../views/HubView.vue')
   },
   {
+    path: '/auth',
+    name: 'auth',
+    component: () =>
+      import(/* webpackChunkName: "auth" */ '../views/AuthView.vue'),
+    children: [
+      {
+        path: 'login',
+        component: () =>
+          import(/* webpackChunkName: "login" */ '../components/LoginForm.vue')
+      },
+      {
+        path: 'register',
+        component: () =>
+          import(
+            /* webpackChunkName: "login" */ '../components/RegisterForm.vue'
+          )
+      }
+    ]
+  },
+  {
     path: '/projects/:project',
     name: 'project',
     component: () =>
