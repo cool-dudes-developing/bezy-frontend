@@ -29,21 +29,19 @@ const routes: Array<RouteRecordRaw> = [
         path: 'login',
         name: 'login',
         component: () =>
-          import(/* webpackChunkName: "login" */ '../components/LoginForm.vue')
+          import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
       },
       {
         path: 'register',
         name: 'register',
         component: () =>
-          import(
-            /* webpackChunkName: "register" */ '../components/RegisterForm.vue'
-          )
+          import(/* webpackChunkName: "register" */ '../views/RegisterView.vue')
       },
       {
         path: 'reset',
         name: 'reset',
         component: () =>
-          import(/* webpackChunkName: "reset" */ '../components/ResetForm.vue')
+          import(/* webpackChunkName: "reset" */ '../views/ResetView.vue')
       }
     ]
   },
