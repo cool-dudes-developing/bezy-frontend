@@ -1,14 +1,11 @@
 <template>
   <input-component
-    type="text"
     name="Email"
     placeholder="What's your email?"
-  ></input-component>
-  <input-component
-    type="password"
-    name="Password"
-    placeholder="Your password"
-  ></input-component>
+    error-message="x"
+    :is-error="false"
+  >
+  </input-component>
 </template>
 
 <script lang="ts">

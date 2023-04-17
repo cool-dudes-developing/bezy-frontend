@@ -27,15 +27,23 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'login',
+        name: 'login',
         component: () =>
           import(/* webpackChunkName: "login" */ '../components/LoginForm.vue')
       },
       {
         path: 'register',
+        name: 'register',
         component: () =>
           import(
-            /* webpackChunkName: "login" */ '../components/RegisterForm.vue'
+            /* webpackChunkName: "register" */ '../components/RegisterForm.vue'
           )
+      },
+      {
+        path: 'reset',
+        name: 'reset',
+        component: () =>
+          import(/* webpackChunkName: "reset" */ '../components/ResetForm.vue')
       }
     ]
   },
