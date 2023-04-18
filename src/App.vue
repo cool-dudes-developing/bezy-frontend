@@ -15,14 +15,3 @@ const blockRepo = computed(() => useRepo(Block))
 userRepo.value.save(data.users)
 blockRepo.value.save(data.blocks)
 </script>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lora:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
-
-body {
-  background: #1f1e1e;
-}
-</style>

@@ -6,6 +6,6 @@
     >
       <router-view />
     </div>
-    <p class="font-footer text-white">Made with ♥ by Bezy</p>
+    <p class="font-footer text-white">Made with ♥️ by Bezy</p>
   </div>
 </template>

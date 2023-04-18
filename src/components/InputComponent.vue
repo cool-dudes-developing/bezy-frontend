@@ -8,7 +8,8 @@
     <input
       :id="name"
       :type="type"
-      v-model="input"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event?.target?.value)"
       :placeholder="placeholder"
       class="p-[0.625rem] w-[100%] h-[2.5rem] bg-purple border border-blue rounded-[0.9375rem] text-white font-input placeholder:text-white"
     />
@@ -21,21 +22,31 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  props: {
+<script lang="ts" setup>
+const props = defineProps({
+  type: {
     type: String,
-    name: String,
-    placeholder: String,
-    errorMessage: String,
-    isError: Boolean
+    default: 'text'
   },
-  data() {
-    return {
-      input: ''
-    }
+  name: {
+    type: String,
+    required: true
+  },
+  placeholder: {
+    type: String,
+    default: ''
+  },
+  modelValue: {
+    type: String,
+    required: true
+  },
+  errorMessage: {
+    type: String,
+    default: ''
+  },
+  isError: {
+    type: Boolean,
+    default: false
   }
 })
 </script>

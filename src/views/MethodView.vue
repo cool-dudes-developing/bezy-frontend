@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts" setup>
-import MethodEditorComponent from '@/components/MethodEditorComponent.vue'
 import MethodEditor from '@/components/MethodEditor.vue'
 import { useRepo } from 'pinia-orm'
 import { computed } from 'vue'

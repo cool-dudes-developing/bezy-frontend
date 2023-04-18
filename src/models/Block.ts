@@ -118,9 +118,9 @@ export default class Block extends Model {
         }
       }
     })
-    
+
     shape.addPorts(
-      this.ports.map((port: Port, index) => ({
+      this.ports.map((port: Port) => ({
         id: port.id,
         group: port.direction,
         attrs: { label: { text: port.name } }
