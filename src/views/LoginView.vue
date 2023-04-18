@@ -1,43 +1,40 @@
 <template>
-  <header class="font-header text-[2rem] text-blue">Sign in</header>
-  <form id="form" class="flex flex-col gap-2 w-[100%]" @submit.prevent>
-    <input-component
-      v-model="email"
-      type="text"
-      name="Email"
-      placeholder="What's your email?"
-    ></input-component>
-    <input-component
-      v-model="password"
-      type="password"
-      name="Password"
-      placeholder="Your password"
-    ></input-component>
-  </form>
-  <footer class="flex flex-col gap-2 w-[100%]">
-    <button
-      type="submit"
-      form="form"
-      class="flex justify-center items-center h-[2.5rem] bg-blue border border-blue rounded-[0.9375rem] text-black font-button"
-      @click="login"
-    >
-      Continue
-    </button>
-    <div class="flex flex-row gap-2 w-[100%]">
+  <div class="flex flex-col gap-[1.875rem] w-full">
+    <header class="font-header text-[2rem] text-blue">Sign in</header>
+    <form id="form" class="flex flex-col gap-2 w-[100%]" @submit.prevent>
+      <input-component
+        v-model="email"
+        type="text"
+        name="Email"
+        placeholder="What's your email?"
+      ></input-component>
+      <input-component
+        v-model="password"
+        type="password"
+        name="Password"
+        placeholder="Your password"
+      ></input-component>
+      <router-link to="/auth/reset" class="text-blue underline font-button text-sm">
+        Forgot password?
+      </router-link>
+    </form>
+    <footer class="flex flex-col gap-2 w-[100%]">
+      <button
+        type="submit"
+        form="form"
+        class="flex justify-center items-center h-[2.5rem] button"
+        @click="login"
+      >
+        Continue
+      </button>
       <router-link
         to="/auth/register"
-        class="flex justify-center items-center h-[2.5rem] w-[50%] bg-purple border border-blue rounded-[0.9375rem] text-blue font-button text-[0.825rem]"
+        class="flex justify-center items-center h-[2.5rem] button-secondary"
       >
         New to Bezy?
       </router-link>
-      <router-link
-        to="/auth/reset"
-        class="flex justify-center items-center h-[2.5rem] w-[50%] bg-purple border border-blue rounded-[0.9375rem] text-blue font-button text-[0.825rem]"
-      >
-        Forgot password?
-      </router-link>
-    </div>
-  </footer>
+    </footer>
+  </div>
 </template>
 
 <script lang="ts" setup>
