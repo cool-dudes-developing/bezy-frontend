@@ -1,8 +1,10 @@
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createORM } from 'pinia-orm'
-import { createApp } from 'vue'
+
 import App from './App.vue'
 import router from './router'
+
 import '@/style/index.css'
 import axios from 'axios'
 import User from './models/User'
@@ -18,9 +20,12 @@ axios.interceptors.response.use((response) => {
 // set token in header
 if (localStorage.getItem('token')) {
   console.log('token found')
-  axios.defaults.headers.common[
-    'Authorization'
-  ] = `Bearer ${localStorage.getItem('token')}`
+  axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 }
 
-createApp(App).use(router).use(createPinia().use(createORM())).mount('#app')
+const app = createApp(App)
+
+app.use(createPinia().use(createORM()))
+app.use(router)
+
+app.mount('#app')

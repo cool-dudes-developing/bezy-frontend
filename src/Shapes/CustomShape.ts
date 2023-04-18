@@ -1,14 +1,13 @@
-import * as joint from 'jointjs';
+import * as joint from 'jointjs'
 
 export class CustomShape extends joint.shapes.standard.Rectangle {
-
   constructor(attributes?: any, options?: any) {
-    super(attributes, options);
-    this.initialize();
+    super(attributes, options)
+    this.initialize()
   }
 
   initialize() {
-    this.resize(150, 100);
+    this.resize(150, 100)
     this.attr({
       body: {
         fill: 'white',
@@ -24,25 +23,25 @@ export class CustomShape extends joint.shapes.standard.Rectangle {
         fontWeight: 'bold',
         fontFamily: 'Arial, helvetica, sans-serif'
       }
-    });
+    })
   }
 
   getHeaderHeight(): number {
-    return 20;
+    return 20
   }
 
   getInputPorts(): any[] {
     return [
       { id: 'in1', group: 'in', args: { x: 0, y: 50 } },
       { id: 'in2', group: 'in', args: { x: 0, y: 70 } }
-    ];
+    ]
   }
 
   getOutputPorts(): any[] {
     return [
       { id: 'out1', group: 'out', args: { x: 150, y: 50 } },
       { id: 'out2', group: 'out', args: { x: 150, y: 70 } }
-    ];
+    ]
   }
 
   getPortMarkup(port: any): string {
@@ -51,11 +50,11 @@ export class CustomShape extends joint.shapes.standard.Rectangle {
         <circle class="port-body" r="6" />
         <text class="port-label">${port.id}</text>
       </g>
-    `;
+    `
   }
 
   getMarkup(): string {
-    const headerHeight = this.getHeaderHeight();
+    const headerHeight = this.getHeaderHeight()
     return `
       <g class="rotatable">
         <g class="scalable">
@@ -64,13 +63,16 @@ export class CustomShape extends joint.shapes.standard.Rectangle {
         </g>
         <rect class="header" height="${headerHeight}" />
         <g class="in-ports">
-          ${this.getInputPorts().map(port => this.getPortMarkup(port)).join('')}
+          ${this.getInputPorts()
+            .map((port) => this.getPortMarkup(port))
+            .join('')}
         </g>
         <g class="out-ports">
-          ${this.getOutputPorts().map(port => this.getPortMarkup(port)).join('')}
+          ${this.getOutputPorts()
+            .map((port) => this.getPortMarkup(port))
+            .join('')}
         </g>
       </g>
-    `;
+    `
   }
-
 }

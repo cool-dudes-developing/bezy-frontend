@@ -23,9 +23,7 @@
           <div>
             <h3>Input</h3>
             <div
-              v-for="input in block.ports.filter(
-                (port) => port.direction === 'in'
-              )"
+              v-for="input in block.ports.filter((port) => port.direction === 'in')"
               :key="input.id"
               class="w-full"
             >
@@ -36,9 +34,7 @@
           <div>
             <h3>Output</h3>
             <div
-              v-for="input in block.ports.filter(
-                (port) => port.direction === 'out'
-              )"
+              v-for="input in block.ports.filter((port) => port.direction === 'out')"
               :key="input.id"
               class="w-full"
             >
@@ -67,9 +63,7 @@ const container = ref<HTMLElement | null>(null)
 const route = computed(() => useRoute())
 const portRepo = computed(() => useRepo(Port))
 const blockRepo = computed(() => useRepo(Block))
-const templateBlocks = computed(() =>
-  blockRepo.value.where('method_id', null).get()
-)
+const templateBlocks = computed(() => blockRepo.value.where('method_id', null).get())
 const blocks = computed(() =>
   blockRepo.value
     .where('method_id', route.value.params.method as string)
@@ -123,14 +117,7 @@ onMounted(() => {
     defaultConnectionPoint: {
       name: 'boundary'
     },
-    validateConnection: function (
-      cellViewS,
-      magnetS,
-      cellViewT,
-      magnetT,
-      end,
-      linkView
-    ) {
+    validateConnection: function (cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
       // Prevent linking from input ports
       if (magnetS && magnetS.getAttribute('port-group') === 'in') return false
 
@@ -148,8 +135,7 @@ onMounted(() => {
         })
 
         // check if any of the links has the same target port
-        if (links.find((link) => link.get('target').port === targetPortId))
-          return false
+        if (links.find((link) => link.get('target').port === targetPortId)) return false
 
         // check if type of source port is the same as target port
         const sourcePortId = magnetS.getAttribute('port')
@@ -170,13 +156,13 @@ onMounted(() => {
     },
     validateMagnet: function (cellView, magnet) {
       // Prevent links from ports that already have a link
-      var port = magnet.getAttribute('port')
-      var links = graph.getConnectedLinks(cellView.model, {
+      const port = magnet.getAttribute('port')
+      const links = graph.getConnectedLinks(cellView.model, {
         outbound: true,
         inbound: true
       })
 
-      var portLinks = _.filter(links, function (o) {
+      const portLinks = _.filter(links, function (o) {
         return o.get('source').port == port || o.get('target').port == port
       })
       if (portLinks.length > 0) return false
@@ -189,10 +175,7 @@ onMounted(() => {
 
   console.log('Initializing building blocks')
   graph.addCells(blocks.value.map((block) => block.buildingShape))
-  console.log(
-    'Building blocks initialized, count: ',
-    graph.getElements().length
-  )
+  console.log('Building blocks initialized, count: ', graph.getElements().length)
   if (blocks.value.length !== graph.getElements().length) {
     console.error('Building blocks count mismatch')
   }
@@ -311,7 +294,7 @@ onMounted(() => {
   })
 
   function showLinkTools(linkView) {
-    var tools = new joint.dia.ToolsView({
+    const tools = new joint.dia.ToolsView({
       tools: [
         new joint.linkTools.Remove({
           distance: '50%',

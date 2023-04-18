@@ -2,6 +2,7 @@
   <header class="font-header text-[2rem] text-blue">Reset password</header>
   <form id="form" class="flex flex-col gap-2 w-[100%]">
     <input-component
+      v-model="email"
       type="text"
       name="Email"
       placeholder="What's your email?"
@@ -32,13 +33,9 @@
   </footer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
 import InputComponent from '@/components/InputComponent.vue'
+import { ref } from 'vue'
 
-export default defineComponent({
-  components: {
-    InputComponent
-  }
-})
+const email = ref('')
 </script>
