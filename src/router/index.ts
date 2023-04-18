@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import User from '@/models/User'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -17,7 +18,53 @@ const routes: Array<RouteRecordRaw> = [
     path: '/hub',
     name: 'hub',
     component: () =>
-      import(/* webpackChunkName: "hub" */ '../views/HubView.vue')
+      import(/* webpackChunkName: "hub" */ '../views/HubView.vue'),
+    beforeEnter: (to, from, next) => {
+      if (User.isAuthorized()) {
+        next()
+      } else {
+        next({ name: 'auth-home' })
+      }
+    }
+  },
+  {
+    path: '/auth',
+    name: 'auth',
+    component: () =>
+      import(/* webpackChunkName: "auth" */ '../views/AuthView.vue'),
+    beforeEnter: (to, from, next) => {
+      if (User.isAuthorized()) {
+        console.log('token exists, redirecting to hub')
+        next({ name: 'hub' })
+      } else {
+        next()
+      }
+    },
+    children: [
+      {
+        path: '',
+        name: 'auth-home',
+        redirect: { name: 'login' }
+      },
+      {
+        path: 'login',
+        name: 'login',
+        component: () =>
+          import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
+      },
+      {
+        path: 'register',
+        name: 'register',
+        component: () =>
+          import(/* webpackChunkName: "register" */ '../views/RegisterView.vue')
+      },
+      {
+        path: 'reset',
+        name: 'reset',
+        component: () =>
+          import(/* webpackChunkName: "reset" */ '../views/ResetView.vue')
+      }
+    ]
   },
   {
     path: '/projects/:project',
