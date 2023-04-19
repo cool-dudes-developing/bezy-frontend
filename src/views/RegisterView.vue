@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-[1.875rem] w-full">
     <header class="font-header text-[2rem] text-blue">Sign up</header>
-    <form id="form" class="flex flex-col gap-2 w-[100%]">
+    <form id="form" class="flex flex-col gap-2 w-[100%]" @submit.prevent="register">
       <input-component
         v-model="user.name"
         type="text"
@@ -55,4 +55,8 @@ const user = ref({
   password: '',
   passwordConfirmation: ''
 })
+
+function register() {
+  console.log(user.value)
+}
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-[1.875rem] w-full">
     <header class="font-header text-[2rem] text-blue">Sign in</header>
-    <form id="form" class="flex flex-col gap-2 w-[100%]" @submit.prevent>
+    <form id="form" class="flex flex-col gap-2 w-[100%]" @submit.prevent="login">
       <input-component
         v-model="email"
         type="text"
@@ -19,12 +19,7 @@
       </router-link>
     </form>
     <footer class="flex flex-col gap-2 w-[100%]">
-      <button
-        type="submit"
-        form="form"
-        class="flex justify-center items-center h-[2.5rem] button"
-        @click="login"
-      >
+      <button type="submit" form="form" class="flex justify-center items-center h-[2.5rem] button">
         Continue
       </button>
       <router-link
