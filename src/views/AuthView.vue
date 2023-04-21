@@ -8,10 +8,13 @@
         <img src="@/assets/logo/logo-light.svg" alt="Bezy logo" class="w-[60px]" />
         <figcaption>Bezy</figcaption>
       </figure>
-      <div class="p-[1.25rem] bg-purple bg-opacity-75 backdrop-blur-xl drop-shadow-lg rounded-3xl max-w-[320px] w-11/12 transition">
+      <div
+        class="p-[1.25rem] bg-purple bg-opacity-75 backdrop-blur-xl drop-shadow-lg rounded-3xl max-w-[320px] w-11/12 h-auto"
+      >
         <router-view v-slot="{ Component }">
           <transition name="slide" mode="out-in">
-            <component :is="Component" />
+            <spinner-loader v-if="spinner?.visible.value" class="" />
+            <component v-else :is="Component" class="transform-gpu" />
           </transition>
         </router-view>
       </div>
@@ -23,5 +26,12 @@
 </template>
 <script setup lang="ts">
 import GradientBackground from '@/components/GradientBackground.vue'
+import SpinnerLoader from '@/components/SpinnerLoader.vue'
+import { SpinnerKey } from '@/symbols'
+import { inject } from 'vue'
+
+const spinner = inject(SpinnerKey)
+console.log(spinner?.visible.value);
+
 </script>
 <style scoped></style>

@@ -17,6 +17,9 @@ module.exports = {
         error: 'Open Sans',
         button: 'Poppins',
         footer: 'Nunito'
+      },
+      space: {
+        header: '4rem'
       }
     }
   },

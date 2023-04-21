@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, ref } from 'vue'
 import { createPinia } from 'pinia'
 import { createORM } from 'pinia-orm'
 
@@ -27,5 +27,16 @@ const app = createApp(App)
 
 app.use(createPinia().use(createORM()))
 app.use(router)
+
+import { SpinnerKey } from '@/symbols'
+app.provide(SpinnerKey, {
+  visible: ref(false),
+  show() {
+    this.visible.value = true
+  },
+  hide() {
+    this.visible.value = false
+  }
+})
 
 app.mount('#app')

@@ -16,14 +16,22 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/hub',
     name: 'hub',
-    component: () => import(/* webpackChunkName: "hub" */ '../views/HubView.vue'),
+    redirect: { name: 'hub-home' },
+    component: () => import(/* webpackChunkName: "hub" */ '../layouts/AppLayout.vue'),
     beforeEnter: (to, from, next) => {
       if (User.isAuthorized()) {
         next()
       } else {
         next({ name: 'auth-home' })
       }
-    }
+    },
+    children: [
+      {
+        path: '',
+        name: 'hub-home',
+        component: () => import(/* webpackChunkName: "hub-home" */ '../views/HubView.vue')
+      }
+    ]
   },
   {
     path: '/auth',

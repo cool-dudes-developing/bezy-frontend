@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full h-full bg-slate-900">
-    <div class="relative w-[54px] h-[54px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+  <div class="w-full h-full flex flex-col justify-center items-center">
+    <div class="relative w-[54px] h-[54px]">
       <div class="bar bar1"></div>
       <div class="bar bar2"></div>
       <div class="bar bar3"></div>
@@ -14,6 +14,7 @@
       <div class="bar bar11"></div>
       <div class="bar bar12"></div>
     </div>
+    <slot />
   </div>
 </template>
 <style scoped>

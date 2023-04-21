@@ -28,11 +28,7 @@
       ></input-component>
     </form>
     <footer class="flex flex-col gap-2 w-[100%]">
-      <button
-        type="submit"
-        form="form"
-        class="flex justify-center items-center h-[2.5rem] button"
-      >
+      <button type="submit" form="form" class="flex justify-center items-center h-[2.5rem] button">
         Continue
       </button>
       <router-link
@@ -47,7 +43,10 @@
 
 <script lang="ts" setup>
 import InputComponent from '@/components/InputComponent.vue'
-import { ref } from 'vue'
+import User from '@/models/User'
+import { SpinnerKey } from '@/symbols'
+import { inject, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const user = ref({
   name: '',
@@ -56,7 +55,25 @@ const user = ref({
   passwordConfirmation: ''
 })
 
+const router = useRouter()
+
+const spinner = inject(SpinnerKey)
+
 function register() {
-  console.log(user.value)
+  spinner?.show()
+  User.register(
+    user.value.name,
+    user.value.email,
+    user.value.password,
+    user.value.passwordConfirmation
+  )
+    .then(() => {
+      router.push({ name: 'hub' })
+    })
+    .finally(() => {
+      setTimeout(() => {
+        spinner?.hide()
+      }, 300)
+    })
 }
 </script>

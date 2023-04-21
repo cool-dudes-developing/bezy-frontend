@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-[1.875rem] w-full">
+  <div class="flex flex-col gap-[1.875rem] w-full h-full">
     <header class="font-header text-[2rem] text-blue">Sign in</header>
     <form id="form" class="flex flex-col gap-2 w-[100%]" @submit.prevent="login">
       <input-component
@@ -35,17 +35,26 @@
 <script lang="ts" setup>
 import InputComponent from '@/components/InputComponent.vue'
 import User from '@/models/User'
-import { ref } from 'vue'
+import { SpinnerKey } from '@/symbols'
+import { inject, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
+const spinner = inject(SpinnerKey)
 
 const router = useRouter()
 
 function login() {
-  User.login(email.value, password.value).then(() => {
-    router.push({ name: 'hub' })
-  })
+  spinner?.show()
+  User.login(email.value, password.value)
+    .then(() => {
+      router.push({ name: 'hub' })
+    })
+    .finally(() => {
+      setTimeout(() => {
+        spinner?.hide()
+      }, 300)
+    })
 }
 </script>

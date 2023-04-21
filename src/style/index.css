@@ -35,18 +35,19 @@ html {
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: 0.1s;
-  transform: translateX(0);
+  transition: 0.3s;
+  transition-property: transform, opacity;
   opacity: 1;
+  transform: scale(1);
 }
 .slide-leave-to {
-  transform: translateX(-15%);
   opacity: 0;
+  transform: scale(0.95);
 }
 .slide-enter,
 .slide-enter-from {
-  transform: translateX(15%);
   opacity: 0;
+  transform: scale(0.95);
 }
 
 .noise {
