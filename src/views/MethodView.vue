@@ -2,7 +2,7 @@
   <h1>method</h1>
   <div class="w-full" v-if="method">
     <!-- <method-editor-component :blocks="method.blocks" /> -->
-    <method-editor/>
+    <method-editor />
   </div>
 </template>
 
@@ -21,5 +21,4 @@ const method = computed(() =>
     .find(route.value.params.method as string)
 )
 </script>
-<style scoped>
-</style>
+<style scoped></style>

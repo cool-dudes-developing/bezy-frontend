@@ -16,13 +16,13 @@ const selector = 'fill'
       fill: 'black',
       fontSize: 12,
       fontWeight: 'bold',
-      fontFamily: 'Arial, helvetica, sans-serif',
+      fontFamily: 'Arial, helvetica, sans-serif'
     },
     attrs: {
-      'text': {
+      text: {
         textWrap: {
           maxLineCount: 2,
-          ellipsis: true,
+          ellipsis: true
         }
       }
     }

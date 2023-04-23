@@ -14,8 +14,6 @@ export default class User extends Model {
   @HasMany(() => Project, 'user_id', 'id') declare projects: Project[]
 
   static login(email: string, password: string) {
-    console.log(process.env)
-
     return api.post('/auth/login', { email, password }).then((response) => {
       useRepo(User).save(response.data.user)
 
@@ -27,12 +25,7 @@ export default class User extends Model {
     })
   }
 
-  static register(
-    name: string,
-    email: string,
-    password: string,
-    password_confirmation: string
-  ) {
+  static register(name: string, email: string, password: string, password_confirmation: string) {
     return api
       .post('/auth/register', {
         name,
@@ -42,9 +35,7 @@ export default class User extends Model {
       })
       .then((response) => {
         useRepo(User).save(response.data.user)
-        axios.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${response.data.access_token}`
+        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`
         localStorage.setItem('token', response.data.access_token)
         localStorage.setItem('user_id', response.data.user.id)
       })

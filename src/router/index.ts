@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import User from '@/models/User'
 
@@ -11,27 +11,32 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/about',
     name: 'about',
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
     path: '/hub',
     name: 'hub',
-    component: () =>
-      import(/* webpackChunkName: "hub" */ '../views/HubView.vue'),
+    redirect: { name: 'hub-home' },
+    component: () => import(/* webpackChunkName: "hub" */ '../layouts/AppLayout.vue'),
     beforeEnter: (to, from, next) => {
       if (User.isAuthorized()) {
         next()
       } else {
         next({ name: 'auth-home' })
       }
-    }
+    },
+    children: [
+      {
+        path: '',
+        name: 'hub-home',
+        component: () => import(/* webpackChunkName: "hub-home" */ '../views/HubView.vue')
+      }
+    ]
   },
   {
     path: '/auth',
     name: 'auth',
-    component: () =>
-      import(/* webpackChunkName: "auth" */ '../views/AuthView.vue'),
+    component: () => import(/* webpackChunkName: "auth" */ '../views/AuthView.vue'),
     beforeEnter: (to, from, next) => {
       if (User.isAuthorized()) {
         console.log('token exists, redirecting to hub')
@@ -49,45 +54,39 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'login',
         name: 'login',
-        component: () =>
-          import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
+        component: () => import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
       },
       {
         path: 'register',
         name: 'register',
-        component: () =>
-          import(/* webpackChunkName: "register" */ '../views/RegisterView.vue')
+        component: () => import(/* webpackChunkName: "register" */ '../views/RegisterView.vue')
       },
       {
         path: 'reset',
         name: 'reset',
-        component: () =>
-          import(/* webpackChunkName: "reset" */ '../views/ResetView.vue')
+        component: () => import(/* webpackChunkName: "reset" */ '../views/ResetView.vue')
       }
     ]
   },
   {
     path: '/projects/:project',
     name: 'project',
-    component: () =>
-      import(/* webpackChunkName: "project" */ '../views/ProjectView.vue')
+    component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue')
   },
   {
     path: '/projects/:project/endpoints/:endpoint',
     name: 'endpoint',
-    component: () =>
-      import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
+    component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
   },
   {
     path: '/projects/:project/methods/:method',
     name: 'method',
-    component: () =>
-      import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
+    component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
 

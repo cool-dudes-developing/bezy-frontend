@@ -6,11 +6,11 @@
     <p>{{ project.description }}</p>
     <h3>Methods</h3>
     <ul>
-        <li v-for="method in project.methods" :key="method.id">
-            <router-link :to="`/projects/${project.id}/methods/${method.id}`">
-            {{ method.name }}
-            </router-link>
-        </li>
+      <li v-for="method in project.methods" :key="method.id">
+        <router-link :to="`/projects/${project.id}/methods/${method.id}`">
+          {{ method.name }}
+        </router-link>
+      </li>
     </ul>
     <h3>Endpoints</h3>
     <ul>

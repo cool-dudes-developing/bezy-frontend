@@ -7,7 +7,8 @@ module.exports = {
         white: '#ffffff',
         blue: '#69e5f8',
         purple: '#3c1635',
-        black: '#000000'
+        black: '#000000',
+        violet: '#3C1635'
       },
       fontFamily: {
         header: 'Poppins',
@@ -16,6 +17,9 @@ module.exports = {
         error: 'Open Sans',
         button: 'Poppins',
         footer: 'Nunito'
+      },
+      space: {
+        header: '4rem'
       }
     }
   },

@@ -9,13 +9,7 @@
   >
     <div
       class="block"
-      style="
-        top: 0;
-        height: auto;
-        width: 300px;
-        z-index: 999;
-        background: lightgray;
-      "
+      style="top: 0; height: auto; width: 300px; z-index: 999; background: lightgray"
     >
       <div>mouse x: {{ mousePosition.x }} y: {{ mousePosition.y }}</div>
       <div>offset x: {{ offset.x }} y: {{ offset.y }}</div>
@@ -162,11 +156,7 @@ const onMouseMove = (e: MouseEvent) => {
   user-select: none;
 
   /* grid cells background */
-  background-image: linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.1) 1px,
-      transparent 1px
-    ),
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
   background-repeat: repeat;

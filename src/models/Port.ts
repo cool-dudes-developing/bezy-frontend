@@ -1,17 +1,17 @@
-import { Model } from 'pinia-orm';
-import { Attr, BelongsTo, Str, Uid } from 'pinia-orm/dist/decorators';
-import Block from './Block';
+import { Model } from 'pinia-orm'
+import { Attr, BelongsTo, Str, Uid } from 'pinia-orm/dist/decorators'
+import Block from './Block'
 
 export default class Port extends Model {
-    static entity = 'ports'
+  static entity = 'ports'
 
-    @Uid() declare id: string
-    @Uid() declare block_id: string
-    @Attr(null) declare connected_to?: string
-    @Str('') declare name: string
-    @Str('') declare type: string
-    @Str('') declare direction: string
+  @Uid() declare id: string
+  @Uid() declare block_id: string
+  @Attr(null) declare connected_to?: string
+  @Str('') declare name: string
+  @Str('') declare type: string
+  @Str('') declare direction: string
 
-    @BelongsTo(() => Block, 'block_id', 'id') declare block: Block
-    @BelongsTo(() => Block, 'target_id', 'id') declare target?: Block
+  @BelongsTo(() => Block, 'block_id', 'id') declare block: Block
+  @BelongsTo(() => Block, 'target_id', 'id') declare target?: Block
 }

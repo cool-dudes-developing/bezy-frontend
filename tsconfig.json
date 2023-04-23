@@ -1,41 +1,30 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.vue"
+  ],
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
     "useDefineForClassFields": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "types": [
-      "webpack-env"
-    ],
     "paths": {
       "@/*": [
-        "src/*"
+        "src/*",
+        "./src/*"
       ]
     },
     "lib": [
-      "esnext",
+      "es2015",
+      "es2016",
       "dom",
-      "dom.iterable",
-      "scripthost"
+      "es2018.promise"
     ]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
   ],
-  "exclude": [
-    "node_modules"
-  ]
 }

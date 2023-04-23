@@ -1,27 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosRequestConfig } from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 
 function url(path: string) {
-  return process.env.VUE_APP_HOST_URL + '/api' + path
+  return import.meta.env.VITE_HOST_URL + '/api' + path
 }
 
 export function get(uri: string, config?: AxiosRequestConfig): Promise<any> {
   return axios.get(url(uri), config)
 }
 
-export function post(
-  uri: string,
-  data?: any,
-  config?: AxiosRequestConfig
-): Promise<any> {
+export function post(uri: string, data?: any, config?: AxiosRequestConfig): Promise<any> {
   return axios.post(url(uri), data, config)
 }
 
-export function put(
-  uri: string,
-  data?: any,
-  config?: AxiosRequestConfig
-): Promise<any> {
+export function put(uri: string, data?: any, config?: AxiosRequestConfig): Promise<any> {
   return axios.put(url(uri), data, config)
 }
 
