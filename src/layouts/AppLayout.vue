@@ -8,10 +8,10 @@
         <small class="font-footer mt-3">Background color is a subject to change</small>
       </spinner-loader>
     </transition>
-    <app-header class="w-full border h-[theme(space.header)]" />
+    <app-header class="w-full h-[theme(space.header)] border-b border-b-purplePizzaz" />
     <div class="w-full h-[calc(100vh_-_theme(space.header))] flex flex-row">
-      <app-sidebar class="border h-full basis-40" />
-      <main class="flex-1 overflow-auto">
+      <app-sidebar class="h-full basis-52 border-r border-r-electricBlue" />
+      <main class="flex-1 overflow-auto scrollbar">
         <router-view />
       </main>
     </div>

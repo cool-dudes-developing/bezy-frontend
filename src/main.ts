@@ -29,6 +29,7 @@ app.use(createPinia().use(createORM()))
 app.use(router)
 
 import { SpinnerKey } from '@/symbols'
+import SvgIconVue from './components/SvgIcon.vue'
 app.provide(SpinnerKey, {
   visible: ref(false),
   show() {
@@ -38,5 +39,7 @@ app.provide(SpinnerKey, {
     this.visible.value = false
   }
 })
+
+app.component('svg-icon', SvgIconVue)
 
 app.mount('#app')
