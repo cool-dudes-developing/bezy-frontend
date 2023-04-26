@@ -21,4 +21,3 @@ const method = computed(() =>
     .find(route.value.params.method as string)
 )
 </script>
-<style scoped></style>
