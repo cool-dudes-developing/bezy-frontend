@@ -28,9 +28,19 @@ const app = createApp(App)
 app.use(createPinia().use(createORM()))
 app.use(router)
 
-import { SpinnerKey } from '@/symbols'
+import { PageSpinnerKey, SpinnerKey } from '@/symbols'
 import SvgIconVue from './components/SvgIcon.vue'
 app.provide(SpinnerKey, {
+  visible: ref(false),
+  show() {
+    this.visible.value = true
+  },
+  hide() {
+    this.visible.value = false
+  }
+})
+
+app.provide(PageSpinnerKey, {
   visible: ref(false),
   show() {
     this.visible.value = true

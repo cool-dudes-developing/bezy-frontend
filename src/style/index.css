@@ -63,6 +63,42 @@ html {
   @apply bg-electricBlue transition-colors duration-300 ease-in-out hover:bg-white;
 }
 
+.gradient {
+  background: linear-gradient(
+      rgb(100, 210, 227),
+      rgb(185, 60, 167),
+      rgb(189, 100, 227),
+      rgb(88, 105, 168),
+      rgb(255, 0, 153),
+      rgb(255, 0, 25)
+    );
+  background-size: 100% 1000%;
+  transition: background-position 1s ease;
+  background-position: 0% 0%;
+  /* animation: gradient 10s ease infinite alternate; */
+}
+
+.gradient.error {
+  background-position: 0% 100%;
+  /* animation: gradient-error 1s ease; */
+  /* animation-fill-mode: forwards; */
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 70%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes gradient-error {
+  100% {
+    background-position: 50% 100%;
+  }
+}
+
 .noise {
   overflow: hidden;
   /* background: linear-gradient(22deg, rgb(100, 210, 227), rgb(185, 60, 167)); */

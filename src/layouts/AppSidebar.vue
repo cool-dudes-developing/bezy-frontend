@@ -1,5 +1,5 @@
 <template>
-  <aside class="flex flex-col gap-[10px] px-[20px] py-[30px]">
+  <aside class="flex flex-col gap-[10px] px-[20px] py-[30px] bg-[#1f1e1e]">
     <router-link :to="'/hub'" :is="'div'">
       <svg-icon name="clock" class="h-4 w-4" />
       Recent

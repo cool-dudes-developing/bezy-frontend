@@ -23,7 +23,8 @@ module.exports = {
         sidebarButton: 'Poppins',
       },
       space: {
-        header: '4rem'
+        header: '4rem',
+        sidebar: '13rem'
       }
     }
   },

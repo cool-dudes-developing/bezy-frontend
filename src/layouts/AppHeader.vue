@@ -1,5 +1,5 @@
 <template>
-  <header class="flex justify-between px-[20px] py-[10px]">
+  <header class="flex justify-between px-[20px] py-[10px] bg-[#1f1e1e]">
     <figure
       class="flex h-full gap-3 items-center cursor-pointer select-none text-white"
       @click="router.push({ name: 'hub' })"
