@@ -56,9 +56,11 @@ export default class User extends Model {
 
   static loadCurrentUser() {
     if (User.isAuthorized()) {
-      return api.get('/auth/user').then((response) => {
-        useRepo(User).save(response.data)
-      })
+      return api
+        .get('/auth/user')
+        .then((response) => {
+          useRepo(User).save(response.data)
+        })
     }
     return Promise.resolve()
   }

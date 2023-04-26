@@ -9,13 +9,21 @@ import '@/style/index.css'
 import axios from 'axios'
 import User from './models/User'
 
-axios.interceptors.response.use((response) => {
-  // if the response is a 401, token invalid
-  if (response.status === 401) {
-    User.logout()
+axios.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    console.log(error)
+    // // if the response is a 401, token invalid
+    if (error.response.status === 401) {
+      console.log('got 401, logging out')
+
+      User.logout()
+    }
+    return error
   }
-  return response
-})
+)
 
 // set token in header
 if (localStorage.getItem('token')) {
