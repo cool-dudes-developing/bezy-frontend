@@ -79,9 +79,27 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
+    path: '/projects/create',
+    name: 'createProject',
+    component: () =>
+      import(/* webpackChunkName: "createProject" */ '../views/ProjectCreateView.vue')
+  },
+  {
     path: '/projects/:project',
     name: 'project',
-    component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue')
+    component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
+    children: [
+      {
+        path: 'methods',
+        name: 'methods',
+        component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
+      },
+      {
+        path: 'endpoints',
+        name: 'endpoints',
+        component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
+      }
+    ]
   },
   {
     path: '/projects/:project/endpoints/:endpoint',
