@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import User from '@/models/User'
+import EditorSidebar from '@/layouts/EditorSidebar.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,6 +31,15 @@ const routes: Array<RouteRecordRaw> = [
         path: '',
         name: 'hub-home',
         component: () => import(/* webpackChunkName: "hub-home" */ '../views/HubView.vue')
+      },
+      {
+        path: 'test-editor',
+        name: 'test-editor',
+        component: () => import(/* webpackChunkName: "test-editor" */ '../views/TestEditorView.vue'),
+        meta: {
+          sidebar: EditorSidebar,
+          header: EditorSidebar
+        }
       }
     ]
   },

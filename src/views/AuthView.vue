@@ -4,8 +4,9 @@
       <gradient-background class="absolute top-0 left-0 -z-10" />
     </div>
     <div class="h-full flex flex-col items-center justify-between">
-      <figure class="flex items-center gap-[10px] font-header font-bold text-4xl">
-        <img src="@/assets/logo/logo-light.svg" alt="Bezy logo" class="w-[60px]" />
+      <figure class="flex items-center gap-[10px] font-header font-bold text-4xl select-none">
+        <!-- <img src="@/assets/logo/logo-light.svg" alt="Bezy logo" class="w-[60px]" /> -->
+        <svg-icon name="logo-light" class="w-[60px]" />
         <figcaption>Bezy</figcaption>
       </figure>
       <div
@@ -31,7 +32,6 @@ import { SpinnerKey } from '@/symbols'
 import { inject } from 'vue'
 
 const spinner = inject(SpinnerKey)
-console.log(spinner?.visible.value);
-
+console.log(spinner?.visible.value)
 </script>
 <style scoped></style>

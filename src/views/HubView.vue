@@ -16,4 +16,31 @@
 
 <script lang="ts" setup>
 import HubComponent from '@/components/HubComponent.vue'
+import User from '@/models/User'
+import { PageSpinnerKey, SpinnerKey } from '@/symbols'
+import { inject } from 'vue'
+
+const spinner = inject(SpinnerKey)
+const pageSpinner = inject(PageSpinnerKey)
+
+if (!User.currentUser) {
+  pageSpinner?.show()
+  User.loadCurrentUser().then(() => {
+    pageSpinner?.hide()
+  })
+}
+
+function appLoaderTest() {
+  spinner?.show()
+  setTimeout(() => {
+    spinner?.hide()
+  }, 2000)
+}
+
+function pageLoaderTest() {
+  pageSpinner?.show()
+  setTimeout(() => {
+    pageSpinner?.hide()
+  }, 2000)
+}
 </script>
