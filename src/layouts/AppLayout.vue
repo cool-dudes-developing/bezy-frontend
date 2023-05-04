@@ -1,5 +1,5 @@
 <template>
-  <main class="w-full h-screen flex gap-[1px] flex-col m-0 gradient error">
+  <main class="w-full h-screen flex gap-[1px] flex-col m-0 gradient">
     <transition name="fade">
       <spinner-loader
         class="w-screen h-screen absolute top-0 left-0 gradient z-50"

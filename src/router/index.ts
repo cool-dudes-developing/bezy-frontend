@@ -33,13 +33,45 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "hub-home" */ '../views/HubView.vue')
       },
       {
+        path: '404',
+        name: '404',
+        component: () => import(/* webpackChunkName: "404" */ '../views/404View.vue')
+      },
+      {
         path: 'test-editor',
         name: 'test-editor',
-        component: () => import(/* webpackChunkName: "test-editor" */ '../views/TestEditorView.vue'),
+        component: () =>
+          import(/* webpackChunkName: "test-editor" */ '../views/TestEditorView.vue'),
         meta: {
           sidebar: EditorSidebar,
           header: EditorSidebar
         }
+      },
+      {
+        path: '/projects',
+        name: 'projects',
+        component: () => import(/* webpackChunkName: "projects" */ '../views/ProjectsView.vue')
+      },
+      {
+        path: '/projects/create',
+        name: 'createProject',
+        component: () =>
+          import(/* webpackChunkName: "createProject" */ '../views/ProjectCreateView.vue')
+      },
+      {
+        path: '/projects/:project',
+        name: 'project',
+        component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
+      },
+      {
+        path: '/projects/:project/methods',
+        name: 'methods',
+        component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
+      },
+      {
+        path: '/projects/:project/endpoints',
+        name: 'endpoints',
+        component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
       }
     ]
   },
@@ -79,29 +111,6 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/projects/create',
-    name: 'createProject',
-    component: () =>
-      import(/* webpackChunkName: "createProject" */ '../views/ProjectCreateView.vue')
-  },
-  {
-    path: '/projects/:project',
-    name: 'project',
-    component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
-    children: [
-      {
-        path: 'methods',
-        name: 'methods',
-        component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
-      },
-      {
-        path: 'endpoints',
-        name: 'endpoints',
-        component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
-      }
-    ]
-  },
-  {
     path: '/projects/:project/endpoints/:endpoint',
     name: 'endpoint',
     component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
@@ -110,6 +119,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/projects/:project/methods/:method',
     name: 'method',
     component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    redirect: { name: '404' }
   }
 ]
 

@@ -11,6 +11,9 @@
         />
       </div>
     </div>
+    <div>
+      <button class="button p-3" @click="User.logout">logout</button>
+    </div>
   </div>
 </template>
 
