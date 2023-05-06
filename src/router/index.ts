@@ -15,10 +15,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/hub',
-    name: 'hub',
-    redirect: { name: 'hub-home' },
-    component: () => import(/* webpackChunkName: "hub" */ '../layouts/AppLayout.vue'),
+    path: '/platform',
+    name: 'platform',
+    redirect: { name: 'recent' },
+    component: () => import(/* webpackChunkName: "platform" */ '../layouts/AppLayout.vue'),
     beforeEnter: (to, from, next) => {
       if (User.isAuthorized()) {
         next()
@@ -28,9 +28,9 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '',
-        name: 'hub-home',
-        component: () => import(/* webpackChunkName: "hub-home" */ '../views/HubView.vue')
+        path: 'recent',
+        name: 'recent',
+        component: () => import(/* webpackChunkName: "recent" */ '../views/HubView.vue')
       },
       {
         path: '404',
@@ -48,28 +48,28 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: '/projects',
+        path: 'projects',
         name: 'projects',
         component: () => import(/* webpackChunkName: "projects" */ '../views/ProjectsView.vue')
       },
       {
-        path: '/projects/create',
+        path: 'projects/create',
         name: 'createProject',
         component: () =>
           import(/* webpackChunkName: "createProject" */ '../views/ProjectCreateView.vue')
       },
       {
-        path: '/projects/:project',
+        path: 'projects/:project',
         name: 'project',
         component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
       },
       {
-        path: '/projects/:project/methods',
+        path: 'projects/:project/methods',
         name: 'methods',
         component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
       },
       {
-        path: '/projects/:project/endpoints',
+        path: 'projects/:project/endpoints',
         name: 'endpoints',
         component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
       }
@@ -81,8 +81,8 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "auth" */ '../views/AuthView.vue'),
     beforeEnter: (to, from, next) => {
       if (User.isAuthorized()) {
-        console.log('token exists, redirecting to hub')
-        next({ name: 'hub' })
+        console.log('token exists, redirecting to platform')
+        next({ name: 'platform' })
       } else {
         next()
       }

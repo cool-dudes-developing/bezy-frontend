@@ -68,7 +68,7 @@ function register() {
     user.value.passwordConfirmation
   )
     .then(() => {
-      router.push({ name: 'hub' })
+      router.push({ name: 'platform' })
     })
     .finally(() => {
       setTimeout(() => {

@@ -1,6 +1,6 @@
 <template>
   <aside class="flex flex-col gap-[10px] px-[20px] py-[30px] bg-[#1f1e1e]">
-    <router-link :to="'/hub/'" :is="'div'">
+    <router-link :to="{ name: 'recent' }" :is="'div'">
       <svg-icon name="clock" class="h-4 w-4" />
       Recent
     </router-link>
@@ -15,7 +15,7 @@
     <div class="pt-5">
       <small class="font-small font-light text-electricBlue text-sm">Projects</small>
     </div>
-    <router-link :to="'/projects'" :is="'div'">
+    <router-link :to="{ name: 'projects' }" :is="'div'">
       <svg-icon name="project" class="h-4 w-4" />
       My projects
     </router-link>
