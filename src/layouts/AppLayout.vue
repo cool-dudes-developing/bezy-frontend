@@ -24,7 +24,7 @@
       </transition>
       <!-- <router-view /> -->
       <main class="flex-1 overflow-hidden scrollbar relative w-[calc(100%_-_theme(space.sidebar))]">
-        <spinner-loader class="w-full h-full absolute top-0 left-0 z-50" v-if="pageSpinner?.visible.value" />
+        <spinner-loader class="w-full h-full absolute top-0 left-0 z-40" v-if="pageSpinner?.visible.value" />
         <router-view v-slot="{ Component }">
           <transition name="app-slide" mode="out-in" appear>
             <component
@@ -42,16 +42,27 @@
 import SpinnerLoader from '@/components/SpinnerLoader.vue'
 import AppHeader from '@/layouts/AppHeader.vue'
 import AppSidebar from '@/layouts/AppSidebar.vue'
+import User from '@/models/User'
 import { SpinnerKey, PageSpinnerKey } from '@/symbols'
 import { inject } from 'vue'
 
 const spinner = inject(SpinnerKey)
 const pageSpinner = inject(PageSpinnerKey)
+
+
+if (!User.currentUser) {
+  spinner?.show()
+  User.loadCurrentUser().then(() => {
+    setTimeout(() => {
+      spinner?.hide()
+    }, 100);
+  })
+}
 </script>
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: 0.15s ease-out;
+  transition: 0.3s ease-out;
   transition-property: transform opacity;
   transform: scale(1);
   opacity: 1;
@@ -72,7 +83,7 @@ const pageSpinner = inject(PageSpinnerKey)
 .page,
 .app-slide-enter-active,
 .app-slide-leave-active {
-  transition: 0.1s linear;
+  transition: 0.1s ease-in;
   transition-property: transform, filter;
   transform: scale(1);
   filter: blur(0) brightness(1);
@@ -81,7 +92,7 @@ const pageSpinner = inject(PageSpinnerKey)
 .page.loading,
 .app-slide-leave-to,
 .app-slide-enter-from {
-  transform: scale(0.95);
+  transform: scale(0.98);
   filter: blur(5px) brightness(0.8);
 }
 

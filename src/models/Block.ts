@@ -1,7 +1,9 @@
 import * as joint from 'jointjs'
-import { Model } from 'pinia-orm'
-import { Attr, HasMany, Num, Str, Uid } from 'pinia-orm/dist/decorators'
+import { Model, useRepo } from 'pinia-orm'
+import { Attr, HasMany, HasManyBy, Num, Str, Uid } from 'pinia-orm/dist/decorators'
 import Port from './Port'
+import Connection from './Connection'
+import * as api from '@/utils/api'
 
 export default class Block extends Model {
   static entity = 'blocks'
@@ -9,12 +11,25 @@ export default class Block extends Model {
   @Uid() declare id: string
   @Attr(null) declare method_id?: string
   @Str('') declare name: string
-  @Num(0) declare top: number
-  @Num(0) declare left: number
+  @Str('') declare description: string
+  @Num(0) declare x: number
+  @Num(0) declare y: number
+  @Attr([]) declare outPortIds: string[]
+  @Attr([]) declare inPortIds: string[]
   @HasMany(() => Port, 'block_id', 'id') declare ports: Port[]
+  @HasManyBy(() => Port, 'outPortIds') declare outPorts: Port[]
+  @HasManyBy(() => Port, 'inPortIds') declare inPorts: Port[]
 
-  get connectedPorts() {
-    return this.ports.filter((port: Port) => port.connected_to)
+  static fetchAllTemplates() {
+    return api.get('/blocks/templates').then((response) => {
+      useRepo(Block).save(response.data.data)
+    })
+  }
+
+  static destroy(id: string) {
+    return api.del('/methods/' + useRepo(Block).find(id)?.method_id + '/blocks/' + id).then(() => {
+      useRepo(Block).destroy(id)
+    })
   }
 
   get inPort() {
@@ -87,12 +102,26 @@ export default class Block extends Model {
     }
   }
 
+  static portSort(a: Port, b: Port) {
+    if (a.type === 'flow' && b.type === 'flow') {
+      return a.created_at - b.created_at
+    } else if (a.type === 'flow') {
+      return -1
+    } else if (b.type === 'flow') {
+      return 1
+    } else {
+      return a.created_at - b.created_at
+    }
+  }
+
   get buildingShape() {
+    console.log(this.x, this.y)
+
     const shape = new joint.shapes.standard.Rectangle({
       id: this.id,
       position: {
-        x: this.left,
-        y: this.top
+        x: this.x,
+        y: this.y
       },
       size: {
         width: 100,
@@ -120,10 +149,18 @@ export default class Block extends Model {
     })
 
     shape.addPorts(
-      this.ports.map((port: Port) => ({
+      this.outPorts.sort(Block.portSort).map((port: Port) => ({
         id: port.id,
-        group: port.direction,
-        attrs: { label: { text: port.name } }
+        group: 'out',
+        attrs: { label: { text: port.type === 'flow' ? 'Out' : port.name } }
+      }))
+    )
+
+    shape.addPorts(
+      this.inPorts.sort(Block.portSort).map((port: Port) => ({
+        id: port.id,
+        group: 'in',
+        attrs: { label: { text: port.type === 'flow' ? 'In' : port.name } }
       }))
     )
 

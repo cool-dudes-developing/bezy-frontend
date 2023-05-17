@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import User from '@/models/User'
 import EditorSidebar from '@/layouts/EditorSidebar.vue'
+import ProjectSidebar from '@/layouts/ProjectSidebar.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -62,6 +63,9 @@ const routes: Array<RouteRecordRaw> = [
         path: 'projects/:project',
         name: 'project',
         component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
+        meta: {
+          sidebar: ProjectSidebar,
+        }
       },
       {
         path: 'projects/:project/methods',
@@ -72,7 +76,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'projects/:project/endpoints',
         name: 'endpoints',
         component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
-      }
+      },
+      {
+        path: 'projects/:project/methods/:method',
+        name: 'method',
+        component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
+      },
     ]
   },
   {
@@ -114,11 +123,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/projects/:project/endpoints/:endpoint',
     name: 'endpoint',
     component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
-  },
-  {
-    path: '/projects/:project/methods/:method',
-    name: 'method',
-    component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
   },
   {
     path: '/:pathMatch(.*)*',

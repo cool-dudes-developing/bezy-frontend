@@ -1,5 +1,5 @@
 import { Model, useRepo } from 'pinia-orm'
-import { HasMany, Str, Uid } from 'pinia-orm/dist/decorators'
+import { Attr, HasMany, Str, Uid } from 'pinia-orm/dist/decorators'
 import Endpoint from './Endpoint'
 import Method from './Method'
 import * as api from '@/utils/api'
@@ -8,7 +8,8 @@ export default class Project extends Model {
   static entity = 'projects'
 
   @Uid() declare id: string
-  @Uid() declare user_id: string
+  @Attr('') declare user_id: string
+  @Str('') declare slug: string
   @Str('') declare name: string
   @Str('') declare description: string
   @Str('') declare created_at: string

@@ -26,13 +26,6 @@ import { inject } from 'vue'
 const spinner = inject(SpinnerKey)
 const pageSpinner = inject(PageSpinnerKey)
 
-if (!User.currentUser) {
-  pageSpinner?.show()
-  User.loadCurrentUser().then(() => {
-    pageSpinner?.hide()
-  })
-}
-
 function appLoaderTest() {
   spinner?.show()
   setTimeout(() => {

@@ -1,8 +1,16 @@
 <template>
-  <h2>Editor</h2>
+  <h2>Editor {{ method.name }}</h2>
   <div id="container" ref="container"></div>
   <div class="flex flex-row w-full">
-    <pre>{{ blocks }}</pre>
+    <pre>{{
+      blocks.map((b) => {
+        return {
+          name: b.name,
+          x: b.x,
+          y: b.y
+        }
+      })
+    }}</pre>
     <div class="flex-grow">
       <h1>Template blocks</h1>
       <div
@@ -19,30 +27,7 @@
             add
           </button>
         </div>
-        <div class="flex justify-evenly">
-          <div>
-            <h3>Input</h3>
-            <div
-              v-for="input in block.ports.filter((port) => port.direction === 'in')"
-              :key="input.id"
-              class="w-full"
-            >
-              {{ input.name }}
-              <span class="bg-blue-400 rounded p-1">{{ input.type }}</span>
-            </div>
-          </div>
-          <div>
-            <h3>Output</h3>
-            <div
-              v-for="input in block.ports.filter((port) => port.direction === 'out')"
-              :key="input.id"
-              class="w-full"
-            >
-              {{ input.name }}
-              <span class="bg-blue-400 rounded p-1">{{ input.type }}</span>
-            </div>
-          </div>
-        </div>
+        <div class="flex justify-evenly"></div>
       </div>
     </div>
   </div>
@@ -58,6 +43,7 @@ import { useRoute } from 'vue-router'
 import _ from 'lodash'
 import Port from '@/models/Port'
 import Method from '@/models/Method'
+import Connection from '@/models/Connection'
 
 const container = ref<HTMLElement | null>(null)
 const route = computed(() => useRoute())
@@ -76,25 +62,16 @@ const method = computed(() =>
     .find(route.value.params.method as string)
 )
 
+console.log('method', method.value.name)
+
 function addTemplateBlock(block: Block) {
   console.log('addTemplateBlock', block)
 
-  const newBlock = blockRepo.value.save({
-    name: block.name,
-    method_id: method.value.id,
-    top: 100,
-    left: 100,
-    ports: block.ports.map((port) => {
-      return {
-        name: port.name,
-        type: port.type,
-        direction: port.direction
-      }
-    })
+  Method.addBlock(method.value.id, block.id).then((block) => {
+    graph.addCell(blocks.value.find((b) => b.id === block.id)?.buildingShape)
   })
-
-  graph.addCell(newBlock.buildingShape)
 }
+
 const namespace = joint.shapes
 const graph = new joint.dia.Graph({}, { cellNamespace: namespace })
 
@@ -181,23 +158,36 @@ onMounted(() => {
   }
 
   console.log('Initializing links')
-  graph.getElements().forEach((cell) => {
-    const block = blockRepo.value.with('ports').find(cell.id)
-    if (!block) return
-    const ports = block.connectedPorts
-    ports.forEach((port) => {
-      if (port.direction === 'out') {
-        const sourcePort = portRepo.value.find(port.connected_to)
-        const link = new joint.shapes.standard.Link()
-        link.source({ id: cell.id, port: port.id })
-        link.target({
-          id: sourcePort.block_id,
-          port: sourcePort.id
-        })
-        graph.addCell(link)
-      }
-    })
+  method.value?.connections.forEach((connection) => {
+    const link = new joint.shapes.standard.Link()
+    console.log('id', connection.id)
+
+    console.log('from', connection.from_method_block.id, 'to', connection.to_method_block.id)
+    console.log('from', connection.from_port.id, 'to', connection.to_port.id)
+
+    link.source({ id: connection.from_method_block_id, port: connection.from_port_id })
+    link.target({ id: connection.to_method_block_id, port: connection.to_port_id })
+    graph.addCell(link)
   })
+
+  // graph.getElements().forEach((cell) => {
+  //   const block = blockRepo.value.with('ports').find(cell.id)
+
+  //   if (!block) return
+  //   const ports = block.connectedPorts
+  //   ports.forEach((port) => {
+  //     if (port.direction === 'out') {
+  //       const sourcePort = portRepo.value.find(port.connected_to)
+  //       const link = new joint.shapes.standard.Link()
+  //       link.source({ id: cell.id, port: port.id })
+  //       link.target({
+  //         id: sourcePort.block_id,
+  //         port: sourcePort.id
+  //       })
+  //       graph.addCell(link)
+  //     }
+  //   })
+  // })
   console.log('Links initialized, count: ', graph.getLinks().length)
 
   // Register events
@@ -228,10 +218,11 @@ onMounted(() => {
 
   graph.on('change:position', function (cell: any) {
     const position = cell.getBBox()
+
     useRepo(Block).save({
       id: cell.id,
-      left: position.x,
-      top: position.y
+      x: position.x,
+      y: position.y
     })
   })
 
@@ -249,17 +240,14 @@ onMounted(() => {
       const targetPort = portRepo.value.find(target.port as string)
 
       if (sourcePort && targetPort) {
-        useRepo(Port).save({
-          id: sourcePort.id,
-          connected_to: targetPort.id
-        })
+        Connection.store(method.value.id, source.id, target.id, source.port, target.port)
       }
     }
   })
 
   graph.on('remove', function (cell: any) {
     if (cell.isElement()) {
-      useRepo(Block).destroy(cell.id)
+      Block.destroy(cell.id)
     }
 
     if (cell.isLink()) {
@@ -270,25 +258,18 @@ onMounted(() => {
       )
 
       const sourcePort = portRepo.value.find(source.port as string)
-      if (sourcePort) {
-        useRepo(Port).save({
-          id: sourcePort.id,
-          connected_to: null
-        })
-      }
 
       // check if target id or target port is undefined
       if (!target.id || !target.port) {
         // TODO: initiate block creation dialog
         console.log('Block creation dialog initialization')
       }
+      
 
       const targetPort = portRepo.value.find(target.port as string)
-      if (targetPort) {
-        useRepo(Port).save({
-          id: targetPort.id,
-          connected_to: null
-        })
+      if (targetPort && sourcePort) {
+        
+        Connection.destroy(useRepo(Connection).where('from_method_block_id', source.id).where('to_method_block_id', target.id).where('from_port_id', source.port).where('to_port_id', target.port).first()?.id as string)
       }
     }
   })
