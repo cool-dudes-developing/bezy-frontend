@@ -2,7 +2,7 @@
   <header class="flex justify-between px-[20px] py-[10px] bg-[#1f1e1e]">
     <figure
       class="flex h-full gap-3 items-center cursor-pointer select-none text-white"
-      @click="router.push({ name: 'hub' })"
+      @click="router.push({ name: 'platform' })"
     >
         <svg-icon name="logo-light" class="h-10 w-10" />
       <h1 class="font-header text-[2rem] text-white">Bezy</h1>

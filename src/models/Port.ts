@@ -7,7 +7,6 @@ export default class Port extends Model {
 
   @Uid() declare id: string
   @Uid() declare block_id: string
-  @Attr(null) declare connected_to?: string
   @Str('') declare name: string
   @Str('') declare type: string
   @Str('') declare direction: string

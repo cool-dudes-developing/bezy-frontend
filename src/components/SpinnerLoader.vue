@@ -27,7 +27,7 @@
   top: 37%;
   border-radius: 12px;
   background-color: #fff;
-  animation: fade 1s linear infinite;
+  animation: fade 0.5s linear infinite;
 }
 
 @-webkit-keyframes fade {
@@ -49,47 +49,47 @@
 
 .bar1 {
   transform: rotate(-330deg) translate(0px, -142%);
-  animation-delay: -0.916s;
+  animation-delay: -0.458s;
 }
 .bar2 {
   transform: rotate(-300deg) translate(0px, -142%);
-  animation-delay: -0.833s;
+  animation-delay: -0.4165s;
 }
 .bar3 {
   transform: rotate(-270deg) translate(0px, -142%);
-  animation-delay: -0.75s;
+  animation-delay: -0.375s;
 }
 .bar4 {
   transform: rotate(-240deg) translate(0px, -142%);
-  animation-delay: -0.666s;
+  animation-delay: -0.333s;
 }
 .bar5 {
   transform: rotate(-210deg) translate(0px, -142%);
-  animation-delay: -0.583s;
+  animation-delay: -0.2915s;
 }
 .bar6 {
   transform: rotate(-180deg) translate(0px, -142%);
-  animation-delay: -0.5s;
+  animation-delay: -0.25s;
 }
 .bar7 {
   transform: rotate(-150deg) translate(0px, -142%);
-  animation-delay: -0.416s;
+  animation-delay: -0.208s;
 }
 .bar8 {
   transform: rotate(-120deg) translate(0px, -142%);
-  animation-delay: -0.333s;
+  animation-delay: -0.1665s;
 }
 .bar9 {
   transform: rotate(-90deg) translate(0px, -142%);
-  animation-delay: -0.25s;
+  animation-delay: -0.125s;
 }
 .bar10 {
   transform: rotate(-60deg) translate(0px, -142%);
-  animation-delay: -0.166s;
+  animation-delay: -0.083s;
 }
 .bar11 {
   transform: rotate(-30deg) translate(0px, -142%);
-  animation-delay: -0.083s;
+  animation-delay: -0.0415s;
 }
 .bar12 {
   transform: rotate(-0deg) translate(0px, -142%);

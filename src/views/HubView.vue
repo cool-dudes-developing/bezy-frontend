@@ -11,6 +11,9 @@
         />
       </div>
     </div>
+    <div>
+      <button class="button p-3" @click="User.logout">logout</button>
+    </div>
   </div>
 </template>
 
@@ -22,13 +25,6 @@ import { inject } from 'vue'
 
 const spinner = inject(SpinnerKey)
 const pageSpinner = inject(PageSpinnerKey)
-
-if (!User.currentUser) {
-  pageSpinner?.show()
-  User.loadCurrentUser().then(() => {
-    pageSpinner?.hide()
-  })
-}
 
 function appLoaderTest() {
   spinner?.show()

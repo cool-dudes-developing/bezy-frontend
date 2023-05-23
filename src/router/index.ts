@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import User from '@/models/User'
 import EditorSidebar from '@/layouts/EditorSidebar.vue'
+import ProjectSidebar from '@/layouts/ProjectSidebar.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,10 +16,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/hub',
-    name: 'hub',
-    redirect: { name: 'hub-home' },
-    component: () => import(/* webpackChunkName: "hub" */ '../layouts/AppLayout.vue'),
+    path: '/platform',
+    name: 'platform',
+    redirect: { name: 'recent' },
+    component: () => import(/* webpackChunkName: "platform" */ '../layouts/AppLayout.vue'),
     beforeEnter: (to, from, next) => {
       if (User.isAuthorized()) {
         next()
@@ -28,19 +29,59 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '',
-        name: 'hub-home',
-        component: () => import(/* webpackChunkName: "hub-home" */ '../views/HubView.vue')
+        path: 'recent',
+        name: 'recent',
+        component: () => import(/* webpackChunkName: "recent" */ '../views/HubView.vue')
+      },
+      {
+        path: '404',
+        name: '404',
+        component: () => import(/* webpackChunkName: "404" */ '../views/404View.vue')
       },
       {
         path: 'test-editor',
         name: 'test-editor',
-        component: () => import(/* webpackChunkName: "test-editor" */ '../views/TestEditorView.vue'),
+        component: () =>
+          import(/* webpackChunkName: "test-editor" */ '../views/TestEditorView.vue'),
         meta: {
           sidebar: EditorSidebar,
           header: EditorSidebar
         }
-      }
+      },
+      {
+        path: 'projects',
+        name: 'projects',
+        component: () => import(/* webpackChunkName: "projects" */ '../views/ProjectsView.vue')
+      },
+      {
+        path: 'projects/create',
+        name: 'createProject',
+        component: () =>
+          import(/* webpackChunkName: "createProject" */ '../views/ProjectCreateView.vue')
+      },
+      {
+        path: 'projects/:project',
+        name: 'project',
+        component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
+        meta: {
+          sidebar: ProjectSidebar,
+        }
+      },
+      {
+        path: 'projects/:project/methods',
+        name: 'methods',
+        component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
+      },
+      {
+        path: 'projects/:project/endpoints',
+        name: 'endpoints',
+        component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
+      },
+      {
+        path: 'projects/:project/methods/:method',
+        name: 'method',
+        component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
+      },
     ]
   },
   {
@@ -49,8 +90,8 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "auth" */ '../views/AuthView.vue'),
     beforeEnter: (to, from, next) => {
       if (User.isAuthorized()) {
-        console.log('token exists, redirecting to hub')
-        next({ name: 'hub' })
+        console.log('token exists, redirecting to platform')
+        next({ name: 'platform' })
       } else {
         next()
       }
@@ -79,37 +120,14 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/projects/create',
-    name: 'createProject',
-    component: () =>
-      import(/* webpackChunkName: "createProject" */ '../views/ProjectCreateView.vue')
-  },
-  {
-    path: '/projects/:project',
-    name: 'project',
-    component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
-    children: [
-      {
-        path: 'methods',
-        name: 'methods',
-        component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
-      },
-      {
-        path: 'endpoints',
-        name: 'endpoints',
-        component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
-      }
-    ]
-  },
-  {
     path: '/projects/:project/endpoints/:endpoint',
     name: 'endpoint',
     component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
   },
   {
-    path: '/projects/:project/methods/:method',
-    name: 'method',
-    component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    redirect: { name: '404' }
   }
 ]
 

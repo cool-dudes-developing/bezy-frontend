@@ -49,7 +49,7 @@ function login() {
   spinner?.show()
   User.login(email.value, password.value)
     .then(() => {
-      router.push({ name: 'hub' })
+      router.push({ name: 'platform' })
     })
     .finally(() => {
       setTimeout(() => {

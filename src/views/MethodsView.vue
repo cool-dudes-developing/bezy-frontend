@@ -9,31 +9,39 @@
           <th>Fields</th>
           <th>Blocks</th>
         </tr>
-        <tr class="bg-background-400 border border-border">
-          <td>Get users</td>
-          <td>20/03/2023, 04:20:13</td>
-          <td>In: 0; Out: 1</td>
-          <td>3</td>
-        </tr>
-        <tr class="bg-background-400 border border-border">
-          <td>Get users by id</td>
-          <td>21/04/2024, 05:21:14</td>
-          <td>In: 1; Out: 1</td>
-          <td>2</td>
-        </tr>
+        <template v-if="!pageSpinner?.visible.value">
+          <tr class="bg-background-400 border border-border">
+            <td>Get users</td>
+            <td>20/03/2023, 04:20:13</td>
+            <td>In: 0; Out: 1</td>
+            <td>3</td>
+          </tr>
+          <tr class="bg-background-400 border border-border">
+            <td>Get users by id</td>
+            <td>21/04/2024, 05:21:14</td>
+            <td>In: 1; Out: 1</td>
+            <td>2</td>
+          </tr>
+        </template>
       </table>
-      {{ methods }}
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useRepo } from 'pinia-orm'
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import Project from '@/models/Project'
+import { PageSpinnerKey } from '@/symbols'
 
 const route = computed(() => useRoute())
+
+const pageSpinner = inject(PageSpinnerKey)
+pageSpinner?.show()
+setTimeout(() => {
+  pageSpinner?.hide()
+}, 1000)
 
 const methods = computed(() =>
   useRepo(Project)

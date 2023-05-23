@@ -10,10 +10,5 @@ import data from './data'
 import { computed, provide } from 'vue'
 import Block from './models/Block'
 
-const userRepo = computed(() => useRepo(User))
-const blockRepo = computed(() => useRepo(Block))
-userRepo.value.save(data.users)
-blockRepo.value.save(data.blocks)
-
 provide('loading', false)
 </script>
