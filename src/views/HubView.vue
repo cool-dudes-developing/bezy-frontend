@@ -2,16 +2,22 @@
   <div class="flex flex-col gap-2.5 px-5 py-7">
     <div class="flex flex-col gap-2.5">
       <header class="h-12 font-header text-3xl font-bold text-pink">Recent</header>
-      <div class="flex flex-row gap-2.5">
-        <HubComponent
-          link="/platform/projects/create"
-          primaryText="Create new project"
-        ></HubComponent>
-        <HubComponent
-          link="/projects/test"
-          primaryText="Test project"
-          secondaryText="Open project"
-        />
+      <div class="overflow-x-scroll">
+        <div class="flex gap-3 min-w-fit whitespace-nowrap">
+          <HubComponent
+            link="/platform/projects/create"
+            primaryText="Create new project"
+            iconName="plus"
+          ></HubComponent>
+          <HubComponent
+            v-for="project in projects"
+            :key="project.id"
+            :link="'/platform/projects/' + project.id"
+            :primaryText="project.name"
+            secondaryText="Open project"
+            iconName="folder-big"
+          />
+        </div>
       </div>
     </div>
     <div>
@@ -22,12 +28,16 @@
 
 <script lang="ts" setup>
 import HubComponent from '@/components/HubComponent.vue'
+import Project from '@/models/Project'
 import User from '@/models/User'
 import { PageSpinnerKey, SpinnerKey } from '@/symbols'
-import { inject } from 'vue'
+import { useRepo } from 'pinia-orm'
+import { inject, computed } from 'vue'
 
 const spinner = inject(SpinnerKey)
 const pageSpinner = inject(PageSpinnerKey)
+
+const projects = computed(() => useRepo(Project).all())
 
 function appLoaderTest() {
   spinner?.show()
@@ -43,3 +53,16 @@ function pageLoaderTest() {
   }, 2000)
 }
 </script>
+
+<style>
+.hub-container {
+  overflow-x: scroll;
+}
+
+.hub-content {
+  display: flex;
+  gap: 2.5rem;
+  min-width: fit-content;
+  white-space: nowrap;
+}
+</style>
