@@ -31,10 +31,15 @@
       <svg-icon name="archive" class="h-4 w-4" />
       Archived projects
     </router-link>
+    <button @click="User.logout" class="mt-auto">
+      <svg-icon name="log-out" class="h-4 w-4" />
+      Log out
+    </button>
   </aside>
 </template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import User from '@/models/User'
 
 const router = useRouter()
 </script>

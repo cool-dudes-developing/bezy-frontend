@@ -3,19 +3,73 @@
     <div class="flex flex-col gap-2.5 p-2.5">
       <template v-if="project">
         <header class="h-12 font-header text-3xl font-bold text-pink">{{ project.name }}</header>
-        <h1>Methods go here</h1>
-        <div>
-          <router-link
-            class="button p-3"
-            v-for="method in project.methods"
-            :key="method.id"
-            :to="{ name: 'method', params: { project: project.id, method: method.id } }"
-          >
-            {{ method.name }}
-          </router-link>
+
+        <div v-if="project.methods.length != 0">
+          <header class="h-12 font-header text-3xl font-bold text-pink">Methods</header>
+          <TableComponent>
+            <template #headers>
+              <th>Name</th>
+              <th>Updated</th>
+              <th>Fields</th>
+              <th>Blocks</th>
+            </template>
+            <template #main>
+              <template v-if="!pageSpinner?.visible.value">
+                <tr
+                  class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+                  v-for="method in project.methods"
+                  :key="method.id"
+                  @click="
+                    $router.push({
+                      name: 'method',
+                      params: { method: method.id }
+                    })
+                  "
+                >
+                  <td>{{ method.name }}</td>
+                  <td>20/03/2023, 04:20:13</td>
+                  <td>In: 0; Out: 1</td>
+                  <td>{{ method.blocks.length }}</td>
+                </tr>
+              </template>
+            </template>
+          </TableComponent>
         </div>
-        <h1>Endpoints go here</h1>
-        <router-link to="/platform/test-editor"> editor </router-link>
+        <div v-if="project.endpoints.length != 0">
+          <header class="h-12 font-header text-3xl font-bold text-pink">Endpoints</header>
+          <TableComponent>
+            <template #headers>
+              <th>Endpoint</th>
+              <th>Logic method</th>
+              <th>Type</th>
+              <th>Middlewares</th>
+            </template>
+            <template #main>
+              <template v-if="!pageSpinner?.visible.value">
+                <tr
+                  class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+                  v-for="endpoint in project.endpoints"
+                  :key="endpoint.id"
+                  @click="
+                    $router.push({
+                      name: 'endpoint',
+                      params: { endpoint: endpoint.id }
+                    })
+                  "
+                >
+                  <td>{{ endpoint.name }}</td>
+                  <td>{{ endpoint.method }}</td>
+                  <td>API</td>
+                  <td>?</td>
+                </tr>
+              </template>
+            </template>
+          </TableComponent>
+        </div>
+
+        <router-link to="/platform/test-editor" class="button w-fit">
+          Test editor (debug)
+        </router-link>
       </template>
     </div>
   </div>
@@ -26,6 +80,7 @@ import { computed, inject } from 'vue'
 import Project from '@/models/Project'
 import { useRoute, useRouter } from 'vue-router'
 import { PageSpinnerKey } from '@/symbols'
+import TableComponent from '@/components/TableComponent.vue'
 
 const route = computed(() => useRoute())
 const router = useRouter()

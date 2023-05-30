@@ -4,7 +4,9 @@
       <svg-icon name="plus-small-blue" class="h-4 w-4" />
       Add div
     </button>
-    <div v-for="div in divs" :key="div.id" :style="div.style">{{ div.content }}</div>
+    <div v-for="div in divs" :key="div.id" :style="div.style" draggable="true" class="absolute">
+      {{ div.content + div.id }}
+    </div>
   </div>
 </template>
 
@@ -12,20 +14,22 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
+const router = useRouter()
+
 const object = {
-  id: '1',
+  id: 1,
   type: 'div',
-  content: 'prekol',
+  content: 'test',
   style: {
     width: '100px',
     height: '100px',
-    'background-color': 'blue'
+    'background-color': 'lime'
   }
 }
 
 const divs = ref([
   {
-    id: '0',
+    id: 0,
     type: 'div',
     content: 'test',
     style: {
@@ -35,8 +39,6 @@ const divs = ref([
     }
   }
 ])
-
-const router = useRouter()
 
 function addObject() {
   if (object.type == 'div') {

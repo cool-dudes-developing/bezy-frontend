@@ -7,7 +7,7 @@
       <TableComponent v-if="projects.length != 0">
         <template #headers>
           <th>Name</th>
-          <th>Description</th>
+          <th colspan="2">Description</th>
           <th>Updated</th>
         </template>
         <template #main>
@@ -18,7 +18,7 @@
             :key="project.id"
           >
             <td>{{ project.name }}</td>
-            <td>{{ project.description }}</td>
+            <td colspan="2">{{ project.description }}</td>
             <td class="flex flex-row justify-between items-center">
               {{ project.updated_at }}
               <svg-icon name="trashcan" @click.stop="destroy(project.id)"></svg-icon>

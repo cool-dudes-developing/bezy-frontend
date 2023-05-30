@@ -91,6 +91,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'projects/:project/methods/:method',
         name: 'method',
         component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
+      },
+      {
+        path: '/projects/:project/endpoints/:endpoint',
+        name: 'endpoint',
+        component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
       }
     ]
   },
@@ -128,11 +133,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "reset" */ '../views/ResetView.vue')
       }
     ]
-  },
-  {
-    path: '/projects/:project/endpoints/:endpoint',
-    name: 'endpoint',
-    component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
   },
   {
     path: '/:pathMatch(.*)*',

@@ -20,16 +20,12 @@
         </div>
       </div>
     </div>
-    <div>
-      <button class="button p-3" @click="User.logout">logout</button>
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import HubComponent from '@/components/HubComponent.vue'
 import Project from '@/models/Project'
-import User from '@/models/User'
 import { PageSpinnerKey, SpinnerKey } from '@/symbols'
 import { useRepo } from 'pinia-orm'
 import { inject, computed } from 'vue'

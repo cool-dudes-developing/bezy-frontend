@@ -1,5 +1,5 @@
 <template>
-  <table class="table-fixed border-separate border border-border rounded-lg">
+  <table class="w-full table-fixed border-separate border border-border rounded-lg">
     <tr class="bg-background-300 border border-border">
       <slot name="headers"></slot>
     </tr>
