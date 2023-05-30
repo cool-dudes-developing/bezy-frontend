@@ -12,6 +12,10 @@
       <svg-icon name="heart" class="h-4 w-4" />
       Likes
     </router-link>
+    <router-link :to="{ name: 'test-frontend' }" :is="'div'">
+      <svg-icon name="table" class="h-4 w-4" />
+      Frontend builder
+    </router-link>
     <div class="pt-5">
       <small class="font-small font-light text-electricBlue text-sm">Projects</small>
     </div>
