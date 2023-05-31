@@ -264,12 +264,17 @@ onMounted(() => {
         // TODO: initiate block creation dialog
         console.log('Block creation dialog initialization')
       }
-      
 
       const targetPort = portRepo.value.find(target.port as string)
       if (targetPort && sourcePort) {
-        
-        Connection.destroy(useRepo(Connection).where('from_method_block_id', source.id).where('to_method_block_id', target.id).where('from_port_id', source.port).where('to_port_id', target.port).first()?.id as string)
+        Connection.destroy(
+          useRepo(Connection)
+            .where('from_method_block_id', source.id)
+            .where('to_method_block_id', target.id)
+            .where('from_port_id', source.port)
+            .where('to_port_id', target.port)
+            .first()?.id as string
+        )
       }
     }
   })

@@ -12,6 +12,10 @@
       <svg-icon name="heart" class="h-4 w-4" />
       Likes
     </router-link>
+    <router-link :to="{ name: 'test-frontend' }" :is="'div'">
+      <svg-icon name="table" class="h-4 w-4" />
+      Frontend builder
+    </router-link>
     <div class="pt-5">
       <small class="font-small font-light text-electricBlue text-sm">Projects</small>
     </div>
@@ -27,10 +31,15 @@
       <svg-icon name="archive" class="h-4 w-4" />
       Archived projects
     </router-link>
+    <button @click="User.logout" class="mt-auto">
+      <svg-icon name="log-out" class="h-4 w-4" />
+      Log out
+    </button>
   </aside>
 </template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import User from '@/models/User'
 
 const router = useRouter()
 </script>

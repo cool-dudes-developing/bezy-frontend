@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import User from '@/models/User'
 import EditorSidebar from '@/layouts/EditorSidebar.vue'
 import ProjectSidebar from '@/layouts/ProjectSidebar.vue'
+import FrontendEditorSidebar from '@/layouts/FrontendEditorSidebar.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -49,6 +50,15 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'test-frontend',
+        name: 'test-frontend',
+        component: () =>
+          import(/* webpackChunkName: "test-editor" */ '../views/FrontendEditorView.vue'),
+        meta: {
+          sidebar: FrontendEditorSidebar
+        }
+      },
+      {
         path: 'projects',
         name: 'projects',
         component: () => import(/* webpackChunkName: "projects" */ '../views/ProjectsView.vue')
@@ -64,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'project',
         component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
         meta: {
-          sidebar: ProjectSidebar,
+          sidebar: ProjectSidebar
         }
       },
       {
@@ -82,6 +92,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'method',
         component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
       },
+      {
+        path: '/projects/:project/endpoints/:endpoint',
+        name: 'endpoint',
+        component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
+      }
     ]
   },
   {
@@ -118,11 +133,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "reset" */ '../views/ResetView.vue')
       }
     ]
-  },
-  {
-    path: '/projects/:project/endpoints/:endpoint',
-    name: 'endpoint',
-    component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
   },
   {
     path: '/:pathMatch(.*)*',

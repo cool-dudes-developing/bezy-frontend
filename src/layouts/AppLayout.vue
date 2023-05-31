@@ -14,7 +14,9 @@
         class="w-full h-[theme(space.header)] transform-gpu"
       />
     </transition>
-    <div class="w-full h-[calc(100vh_-_theme(space.header)_-_1px)] flex gap-[1px] flex-row relative">
+    <div
+      class="w-full h-[calc(100vh_-_theme(space.header)_-_1px)] flex gap-[1px] flex-row relative"
+    >
       <!-- <div class="h-full basis-52 border-r border-r-electricBlue"></div> -->
       <transition :name="$route.meta.sidebar ? 'sidebar-slide' : 'sidebar-slide-reverse'">
         <component
@@ -23,8 +25,13 @@
         />
       </transition>
       <!-- <router-view /> -->
-      <main class="flex-1 overflow-hidden scrollbar relative w-[calc(100%_-_theme(space.sidebar))]">
-        <spinner-loader class="w-full h-full absolute top-0 left-0 z-40" v-if="pageSpinner?.visible.value" />
+      <main
+        class="flex-1 overflow-visible scrollbar relative w-[calc(100%_-_theme(space.sidebar))] z-0"
+      >
+        <spinner-loader
+          class="w-full h-full absolute top-0 left-0 z-40"
+          v-if="pageSpinner?.visible.value"
+        />
         <router-view v-slot="{ Component }">
           <transition name="app-slide" mode="out-in" appear>
             <component
@@ -49,13 +56,12 @@ import { inject } from 'vue'
 const spinner = inject(SpinnerKey)
 const pageSpinner = inject(PageSpinnerKey)
 
-
 if (!User.currentUser) {
   spinner?.show()
   User.loadCurrentUser().then(() => {
     setTimeout(() => {
       spinner?.hide()
-    }, 100);
+    }, 100)
   })
 }
 </script>
