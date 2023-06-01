@@ -29,7 +29,7 @@
                   <td>{{ method.name }}</td>
                   <td>20/03/2023, 04:20:13</td>
                   <td>In: 0; Out: 1</td>
-                  <td>{{ method.blocks.length }}</td>
+                  <td>{{ method.blocks?.length ?? 0 }}</td>
                 </tr>
               </template>
             </template>

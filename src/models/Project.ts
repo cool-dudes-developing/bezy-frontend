@@ -39,7 +39,7 @@ export default class Project extends Model {
 
   static destroy(id: string) {
     return api.del(`/projects/${id}`).then((response) => {
-      useRepo(Project).save(response.data.data)
+      useRepo(Project).destroy(id)
     })
   }
 }
