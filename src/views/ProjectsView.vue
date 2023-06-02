@@ -60,7 +60,6 @@ const projects = computed(() => useRepo(Project).all())
 
 function destroy(id: string) {
   pageSpinner?.show()
-  useRepo(Project).destroy(id) || console.log('project delete error (null)')
   Project.destroy(id).finally(() => pageSpinner?.hide())
 }
 </script>
