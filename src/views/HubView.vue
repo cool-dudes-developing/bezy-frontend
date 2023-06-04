@@ -2,20 +2,20 @@
   <div class="flex flex-col gap-2.5 px-5 py-7">
     <div class="flex flex-col gap-2.5">
       <header class="h-12 font-header text-3xl font-bold text-pink">Recent</header>
-      <div class="overflow-x-scroll">
+      <div class="overflow-x-auto">
         <div class="flex gap-3 min-w-fit whitespace-nowrap">
-          <HubComponent
+          <CardComponent
             link="/platform/projects/create"
             primaryText="Create new project"
             iconName="plus"
-          ></HubComponent>
-          <HubComponent
+          />
+          <CardComponent
             v-for="project in projects"
             :key="project.id"
             :link="'/platform/projects/' + project.id"
             :primaryText="project.name"
             secondaryText="Open project"
-            iconName="folder-big"
+            :iconName="'folder-big'"
           />
         </div>
       </div>
@@ -24,14 +24,17 @@
 </template>
 
 <script lang="ts" setup>
-import HubComponent from '@/components/HubComponent.vue'
+import CardComponent from '@/components/CardComponent.vue'
 import Project from '@/models/Project'
 import { PageSpinnerKey, SpinnerKey } from '@/symbols'
 import { useRepo } from 'pinia-orm'
-import { inject, computed } from 'vue'
+import { inject, computed, onMounted } from 'vue'
 
 const spinner = inject(SpinnerKey)
 const pageSpinner = inject(PageSpinnerKey)
+
+pageSpinner?.show()
+Project.fetchAll().then(() => pageSpinner?.hide())
 
 const projects = computed(() => useRepo(Project).all())
 
