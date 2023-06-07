@@ -1,115 +1,57 @@
 <template>
   <aside class="flex flex-col gap-[10px] px-[20px] py-[30px] bg-[#1f1e1e]">
-    <button @click="toggleDropdown('database')">
-      <svg-icon name="database" class="h-4 w-4" />
-      Database
-    </button>
-    <div
-      :class="[
-        'flex',
-        'flex-col',
-        'gap-[10px]',
-        'bg-[#1f1e1]',
-        'dropdown',
-        'items-start',
-        'justify-start',
-        { active: dropdownOpen['database'] }
-      ]"
-    >
-      <router-link :to="{ name: 'recent' }" :is="'div'" class="w-full ml-10">
+    <SidebarDropdown iconName="database" innerText="Database">
+      <router-link :to="{ name: '404' }" :is="'div'" class="w-full ml-6">
         <svg-icon name="table" class="h-4 w-4" />
-        Users
+        Test
       </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'" class="w-full ml-10">
+      <router-link :to="{ name: '404' }" :is="'div'" class="w-full ml-6">
         <svg-icon name="table" class="h-4 w-4" />
-        Posts
+        Test
       </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'" class="w-full ml-10">
+      <router-link :to="{ name: '404' }" :is="'div'" class="w-full ml-6">
         <svg-icon name="table" class="h-4 w-4" />
-        Comments
+        Test
       </router-link>
-    </div>
-    <button @click="toggleDropdown('logic')">
-      <svg-icon name="logic" class="h-4 w-4" />
-      Logic
-    </button>
-    <div
-      :class="[
-        'flex',
-        'flex-col',
-        'gap-[10px]',
-        'bg-[#1f1e1]',
-        'dropdown',
-        { active: dropdownOpen['logic'] }
-      ]"
-    >
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
+    </SidebarDropdown>
+    <SidebarDropdown iconName="code" innerText="Backend">
+      <router-link :to="{ name: 'methods' }" :is="'div'" class="w-full ml-6">
+        <svg-icon name="logic" class="h-4 w-4" />
+        Methods
       </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
+      <router-link :to="{ name: 'endpoints' }" :is="'div'" class="w-full ml-6">
+        <svg-icon name="endpoints" class="h-4 w-4" />
+        Endpoints
       </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
+    </SidebarDropdown>
+    <SidebarDropdown iconName="image" innerText="Frontend">
+      <router-link :to="{ name: 'recent' }" :is="'div'" class="w-full ml-6">
+        <svg-icon name="browser" class="h-4 w-4" />
+        Test
       </router-link>
-    </div>
-    <button @click="toggleDropdown('endpoints')">
-      <svg-icon name="endpoints" class="h-4 w-4" />
-      Endpoints
-    </button>
-    <div
-      :class="[
-        'flex',
-        'flex-col',
-        'gap-[10px]',
-        'bg-[#1f1e1]',
-        'dropdown',
-        { active: dropdownOpen['endpoints'] }
-      ]"
-    >
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
+      <router-link :to="{ name: 'recent' }" :is="'div'" class="w-full ml-6">
+        <svg-icon name="browser" class="h-4 w-4" />
+        Test
       </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
+      <router-link :to="{ name: 'recent' }" :is="'div'" class="w-full ml-6">
+        <svg-icon name="browser" class="h-4 w-4" />
+        Test
       </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
-      </router-link>
-    </div>
-    <button @click="toggleDropdown('storage')">
-      <svg-icon name="folder" class="h-4 w-4" />
-      Storage
-    </button>
-    <div
-      :class="[
-        'flex',
-        'flex-col',
-        'gap-[10px]',
-        'bg-[#1f1e1]',
-        'dropdown',
-        { active: dropdownOpen['storage'] }
-      ]"
-    >
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
-      </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
-      </router-link>
-      <router-link :to="{ name: 'recent' }" :is="'div'">
-        <svg-icon name="table" class="h-4 w-4" />
-        Recent
-      </router-link>
-    </div>
+    </SidebarDropdown>
+    <SidebarDropdown iconName="folder" innerText="Storage">
+      <div class="w-full ml-6">
+        <svg-icon name="file" class="h-4 w-4" />
+        Test
+      </div>
+      <div class="w-full ml-6">
+        <svg-icon name="file" class="h-4 w-4" />
+        Test
+      </div>
+      <div class="w-full ml-6">
+        <svg-icon name="file" class="h-4 w-4" />
+        Test
+      </div>
+    </SidebarDropdown>
   </aside>
 </template>
 
@@ -119,6 +61,7 @@ import { computed, inject, ref } from 'vue'
 import Project from '@/models/Project'
 import { useRoute, useRouter } from 'vue-router'
 import { PageSpinnerKey } from '@/symbols'
+import SidebarDropdown from '@/components/SidebarDropdown.vue'
 
 const route = computed(() => useRoute())
 const router = useRouter()
@@ -158,7 +101,7 @@ aside > * {
 }
 
 .dropdown.active {
-  max-height: 100px;
+  max-height: max-content;
 }
 .router-link-active {
   @apply text-purplePizzaz;

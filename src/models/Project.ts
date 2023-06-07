@@ -20,7 +20,6 @@ export default class Project extends Model {
   static fetchAll() {
     return api.get('/projects').then((response) => {
       console.log(response.data)
-
       useRepo(Project).save(response.data.data)
     })
   }

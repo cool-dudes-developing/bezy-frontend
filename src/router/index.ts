@@ -75,27 +75,48 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
         meta: {
           sidebar: ProjectSidebar
-        }
-      },
-      {
-        path: 'projects/:project/methods',
-        name: 'methods',
-        component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
-      },
-      {
-        path: 'projects/:project/endpoints',
-        name: 'endpoints',
-        component: () => import(/* webpackChunkName: "methods" */ '../views/EndpointsView.vue')
-      },
-      {
-        path: 'projects/:project/methods/:method',
-        name: 'method',
-        component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
-      },
-      {
-        path: '/projects/:project/endpoints/:endpoint',
-        name: 'endpoint',
-        component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
+        },
+        children: [
+          {
+            path: '',
+            name: 'projectHub',
+            component: () =>
+              import(/* webpackChunkName: "projectHub" */ '../views/ProjectHubView.vue')
+          },
+          {
+            path: 'methods',
+            name: 'methods',
+            component: () => import(/* webpackChunkName: "methods" */ '../views/MethodsView.vue')
+          },
+          {
+            path: 'endpoints',
+            name: 'endpoints',
+            component: () =>
+              import(/* webpackChunkName: "endpoints" */ '../views/EndpointsView.vue')
+          },
+          {
+            path: 'methods/create',
+            name: 'methodCreate',
+            component: () =>
+              import(/* webpackChunkName: "methodCreate" */ '../views/MethodCreateView.vue')
+          },
+          {
+            path: 'endpoints/create',
+            name: 'endpointCreate',
+            component: () =>
+              import(/* webpackChunkName: "endpointCreate" */ '../views/EndpointCreateView.vue')
+          },
+          {
+            path: 'methods/:method',
+            name: 'method',
+            component: () => import(/* webpackChunkName: "method" */ '../views/MethodView.vue')
+          },
+          {
+            path: 'endpoints/:endpoint',
+            name: 'endpoint',
+            component: () => import(/* webpackChunkName: "endpoint" */ '../views/EndpointView.vue')
+          }
+        ]
       }
     ]
   },
