@@ -4,6 +4,8 @@ import { Attr, HasMany, HasManyBy, Num, Str, Uid } from 'pinia-orm/dist/decorato
 import Port from './Port'
 import Connection from './Connection'
 import * as api from '@/utils/api'
+import { dia } from 'jointjs'
+import { Shape } from './Shapes'
 
 export default class Block extends Model {
   static entity = 'blocks'
@@ -26,80 +28,17 @@ export default class Block extends Model {
     })
   }
 
+  static save(block: Block) {
+    return api.put(
+      '/methods/' + useRepo(Block).find(block.id)?.method_id + '/blocks/' + block.id,
+      block
+    )
+  }
+
   static destroy(id: string) {
     return api.del('/methods/' + useRepo(Block).find(id)?.method_id + '/blocks/' + id).then(() => {
       useRepo(Block).destroy(id)
     })
-  }
-
-  get inPort() {
-    return {
-      position: {
-        name: 'left'
-      },
-      attrs: {
-        portBody: {
-          magnet: true,
-          r: 10,
-          fill: '#023047',
-          stroke: '#023047'
-        }
-      },
-      label: {
-        position: {
-          name: 'left',
-          args: { y: 6 }
-        },
-        markup: [
-          {
-            tagName: 'text',
-            selector: 'label',
-            className: 'label-text'
-          }
-        ]
-      },
-      markup: [
-        {
-          tagName: 'circle',
-          selector: 'portBody'
-        }
-      ]
-    }
-  }
-
-  get outPort() {
-    return {
-      position: {
-        name: 'right'
-      },
-      attrs: {
-        portBody: {
-          magnet: true,
-          r: 10,
-          fill: '#E6A502',
-          stroke: '#023047'
-        }
-      },
-      label: {
-        position: {
-          name: 'right',
-          args: { y: 6 }
-        },
-        markup: [
-          {
-            tagName: 'text',
-            selector: 'label',
-            className: 'label-text'
-          }
-        ]
-      },
-      markup: [
-        {
-          tagName: 'circle',
-          selector: 'portBody'
-        }
-      ]
-    }
   }
 
   static portSort(a: Port, b: Port) {
@@ -117,53 +56,31 @@ export default class Block extends Model {
   get buildingShape() {
     console.log(this.x, this.y)
 
-    const shape = new joint.shapes.standard.Rectangle({
+    return new Shape({
       id: this.id,
       position: {
         x: this.x,
         y: this.y
       },
-      size: {
-        width: 100,
-        height: 100
-      },
       attrs: {
-        root: {
-          magnet: false
-        },
-        body: {
-          fill: '#8ECAE6'
-        },
         label: {
-          text: this.name,
-          fontSize: 16,
-          y: -10
+          text: this.name
         }
       },
       ports: {
-        groups: {
-          in: this.inPort,
-          out: this.outPort
-        }
+        items: [
+          ...this.outPorts.sort(Block.portSort).map((port: Port) => ({
+            id: port.id,
+            group: 'out',
+            attrs: { portLabel: { text: port.type === 'flow' ? 'Out' : port.name } }
+          })),
+          ...this.inPorts.sort(Block.portSort).map((port: Port) => ({
+            id: port.id,
+            group: 'in',
+            attrs: { portLabel: { text: port.type === 'flow' ? 'In' : port.name } }
+          }))
+        ]
       }
     })
-
-    shape.addPorts(
-      this.outPorts.sort(Block.portSort).map((port: Port) => ({
-        id: port.id,
-        group: 'out',
-        attrs: { label: { text: port.type === 'flow' ? 'Out' : port.name } }
-      }))
-    )
-
-    shape.addPorts(
-      this.inPorts.sort(Block.portSort).map((port: Port) => ({
-        id: port.id,
-        group: 'in',
-        attrs: { label: { text: port.type === 'flow' ? 'In' : port.name } }
-      }))
-    )
-
-    return shape
   }
 }

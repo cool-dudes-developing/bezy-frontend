@@ -44,7 +44,7 @@ export default class Connection extends Model {
     return api
       .del('/methods/' + useRepo(Connection).find(id)?.method_id + '/connections/' + id)
       .then(() => {
-        this.destroy(id)
+        useRepo(Connection).destroy(id)
       })
   }
 }

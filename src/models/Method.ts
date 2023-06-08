@@ -41,12 +41,12 @@ export default class Method extends Model {
     })
   }
 
-  static addBlock(method_id: string, block_id: string) {
+  static addBlock(method_id: string, block_id: string, x: number = 0, y: number = 0) {
     return api
       .post('/methods/' + method_id + '/blocks', {
         block_id: block_id,
-        x: 0,
-        y: 0
+        x: +Math.floor(x),
+        y: +Math.floor(y)
       })
       .then((response) => {
         return useRepo(Block).save(response.data.data) as unknown as Block

@@ -1,10 +1,11 @@
 <template>
-  <div>
-    <h1>method</h1>
-    <div class="w-full" v-if="method && !pageSpinner?.visible.value">
+  <div class="relative h-full w-full">
+    <div
+      class="w-full h-full"
+      v-if="method && method.blocks.length > 0 && !pageSpinner?.visible.value"
+    >
       <!-- <method-editor-component :blocks="method.blocks" /> -->
       <method-editor />
-      <pre>{{ method }}</pre>
     </div>
   </div>
 </template>

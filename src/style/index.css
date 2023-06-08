@@ -21,6 +21,7 @@
 html {
   background: #1f1e1e;
   color: #f5f5f7;
+  /* overflow: hidden; */
 }
 
 #app,
@@ -28,6 +29,10 @@ body,
 html {
   height: 100%;
 }
+
+/* body {
+  overflow: auto;
+} */
 
 .bblock {
   display: flex;
@@ -65,13 +70,13 @@ html {
 
 .gradient {
   background: linear-gradient(
-      rgb(100, 210, 227),
-      rgb(185, 60, 167),
-      rgb(189, 100, 227),
-      rgb(88, 105, 168),
-      rgb(255, 0, 153),
-      rgb(255, 0, 25)
-    );
+    rgb(100, 210, 227),
+    rgb(185, 60, 167),
+    rgb(189, 100, 227),
+    rgb(88, 105, 168),
+    rgb(255, 0, 153),
+    rgb(255, 0, 25)
+  );
   background-size: 100% 1000%;
   transition: background-position 1s ease;
   background-position: 0% 0%;

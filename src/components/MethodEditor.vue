@@ -1,33 +1,41 @@
 <template>
-  <h2>Editor {{ method.name }}</h2>
-  <div id="container" ref="container"></div>
-  <div class="flex flex-row w-full">
-    <pre>{{
-      blocks.map((b) => {
-        return {
-          name: b.name,
-          x: b.x,
-          y: b.y
-        }
-      })
-    }}</pre>
-    <div class="flex-grow">
-      <h1>Template blocks</h1>
-      <div
-        v-for="block in templateBlocks"
-        :key="block.id"
-        class="bg-red-400 rounded w-full p-3 my-3"
-      >
-        <div class="flex justify-between">
-          <h3>{{ block.name }}</h3>
-          <button
-            class="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
-            @click="addTemplateBlock(block)"
-          >
-            add
-          </button>
+  <div
+    id="container"
+    ref="container"
+    class="h-full w-full relative"
+    @mousemove="handleMouseMove"
+    @wheel.prevent="handleWheelMove"
+  ></div>
+  <div class="absolute top-0 flex gap-3">
+    <button class="bg-green-600" @click="logbus">log bus</button>
+    <button class="bg-green-600" @click="undo">undo</button>
+    <button class="bg-green-600" @click="redo">redo</button>
+    <button class="bg-green-600" @click="save">save</button>
+    <div
+      v-if="blocksModalOpen"
+      class="absolute w-64 bg-black bg-opacity-50"
+      :style="{ top: blocksModalPosition.y + 'px', left: blocksModalPosition.x + 'px' }"
+    >
+      <div class="flex flex-row justify-between">
+        <h1>Add block</h1>
+        <button @click="blocksModalOpen = false">close</button>
+      </div>
+      <div class="flex flex-col overflow-auto">
+        <div v-for="block in templateBlocks">
+          <div class="flex flex-row justify-between">
+            <h2>{{ block.name }}</h2>
+            <button
+              @click="
+                () => {
+                  addTemplateBlock(block)
+                  blocksModalOpen = false
+                }
+              "
+            >
+              add
+            </button>
+          </div>
         </div>
-        <div class="flex justify-evenly"></div>
       </div>
     </div>
   </div>
@@ -35,15 +43,19 @@
 <script lang="ts" setup>
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import 'jointjs/dist/joint.css'
 import Block from '@/models/Block'
 import * as joint from 'jointjs'
+import { dia } from 'jointjs'
 import { useRepo } from 'pinia-orm'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import _ from 'lodash'
 import Port from '@/models/Port'
 import Method from '@/models/Method'
 import Connection from '@/models/Connection'
+import { Stack } from '@/utils/stack'
+import { HighlightFrame } from '@/models/Shapes'
 
 const container = ref<HTMLElement | null>(null)
 const route = computed(() => useRoute())
@@ -62,38 +74,273 @@ const method = computed(() =>
     .find(route.value.params.method as string)
 )
 
+const blocksModalOpen = ref(false)
+const blocksModalPosition = ref({ x: 0, y: 0 })
+
 console.log('method', method.value.name)
 
 function addTemplateBlock(block: Block) {
   console.log('addTemplateBlock', block)
 
-  Method.addBlock(method.value.id, block.id).then((block) => {
+  if (!blocksModalPosition.value) return
+  const p = offsetToLocalPoint(blocksModalPosition.value.x, blocksModalPosition.value.y, paper)
+
+  Method.addBlock(method.value.id, block.id, p.x, p.y).then((block) => {
     graph.addCell(blocks.value.find((b) => b.id === block.id)?.buildingShape)
   })
 }
 
+const undoStack = new Stack()
+const redoStack = new Stack()
+
+function logbus() {
+  console.log('undoStack', undoStack)
+  console.log('redoStack', redoStack)
+}
+
+function undo() {
+  const action = undoStack.pop()
+  if (!action) return
+  redoStack.push(action)
+  switch (action.type) {
+    case 'elementMove':
+      let el = graph.getElements().find((el) => el.id === action.id)
+      if (el) {
+        el.translate(-action.dx, -action.dy)
+      }
+  }
+}
+
+function redo() {
+  const action = redoStack.pop()
+  if (!action) return
+  undoStack.push(action)
+  switch (action.type) {
+    case 'elementMove':
+      let el = graph.getElements().find((el) => el.id === action.id)
+      if (el) {
+        el.translate(action.dx, action.dy)
+      }
+  }
+}
+
+function save() {
+  blocks.value.forEach((block) => {
+    Block.save(block)
+  })
+}
+
 const namespace = joint.shapes
+
 const graph = new joint.dia.Graph({}, { cellNamespace: namespace })
+let paper: joint.dia.Paper | null = null
+let dragStartPosition: { x: number; y: number } | null = null
+let elementDragStartPosition: { x: number; y: number } | null = null
+let localMousePosition: { x: number; y: number } | null = null
+let highlightElement: joint.dia.ElementView | null = null
+
+function handleMouseMove(e: MouseEvent) {
+  localMousePosition = { x: e.offsetX, y: e.offsetY }
+  if (dragStartPosition) {
+    const dx = e.offsetX - dragStartPosition.x
+    const dy = e.offsetY - dragStartPosition.y
+
+    paper?.translate(dx, dy)
+  }
+}
+
+function offsetToLocalPoint(offsetX, offsetY, paper) {
+  const svgPoint = paper.svg.createSVGPoint()
+  svgPoint.x = offsetX
+  svgPoint.y = offsetY
+  return svgPoint.matrixTransform(paper.viewport.getCTM().inverse())
+}
+
+function handleWheelMove(e: WheelEvent) {
+  if (!paper?.options?.origin) return
+
+  if (e.ctrlKey) {
+    const delta = Math.min(Math.max(e.wheelDelta, -1), 1) / 20
+    const scale = paper.scale().sx + delta
+
+    if (scale <= 0.25 || scale >= 2) return
+
+    const p = offsetToLocalPoint(e.offsetX, e.offsetY, paper)
+
+    const oldscale = paper.scale().sx
+
+    const factor = oldscale / scale
+
+    const ax = p.x - p.x * factor
+    const ay = p.y - p.y * factor
+
+    const origin = paper.options.origin
+
+    const tx = origin.x - ax * scale
+    const ty = origin.y - ay * scale
+
+    paper.translate(tx, ty)
+
+    const ctm = paper.matrix()
+
+    ctm.a = scale
+    ctm.d = scale
+
+    paper.matrix(ctm)
+
+    paper.drawGrid()
+  } else {
+    const dx = paper.options.origin.x - e.deltaX
+    const dy = paper.options.origin.y - e.deltaY
+
+    paper?.translate(dx, dy)
+  }
+}
+
+function selectElement(elementView: joint.dia.ElementView) {
+  highlightElement = elementView
+  HighlightFrame.add(elementView, 'root', 'frame', { padding: 10 })
+  elementView.addTools(
+    new joint.dia.ToolsView({
+      tools: [
+        new joint.linkTools.Remove({
+          scale: 1.5,
+          x: '100%',
+          y: '0%'
+        })
+      ]
+    })
+  )
+}
+
+function unselectElement(elementView: joint.dia.ElementView) {
+  highlightElement = null
+  HighlightFrame.remove(elementView, 'frame')
+  elementView.removeTools()
+}
+
+function removeElement(elementView: joint.dia.ElementView) {
+  // TODO: implement this
+}
+
+function selectLink(linkView: joint.dia.LinkView) {
+  // TODO: implement this
+}
+
+function unselectLink(linkView: joint.dia.LinkView) {
+  // TODO: implement this
+}
+
+function removeLink(linkView: joint.dia.LinkView) {
+  // TODO: implement this
+}
 
 onMounted(() => {
-  const paper = new joint.dia.Paper({
+  paper = new joint.dia.Paper({
     el: document.getElementById('container'),
-    width: '100%',
-    height: 400,
     model: graph,
-    gridSize: 5,
-    drawGrid: true,
+    async: true,
+    interactive: {
+      // label move is disabled by default
+      labelMove: true
+    },
+
+    // set paper dimensions
+    width: '100%',
+    height: '100%',
+
+    // set grid size
+    gridSize: 10,
+    sorting: joint.dia.Paper.sorting.APPROX,
+    drawGrid: {
+      name: 'mesh',
+      args: { color: '#f3dbf3', thickness: 0.1, scaleFactor: 5 }
+    },
+
+    // set paper styling
     background: {
-      color: 'rgba(0, 255, 0, 0.3)'
+      color: '#4a1a42'
     },
-    cellViewNamespace: namespace,
-    linkPinning: false, // Prevent link being dropped in blank paper area
+
+    // Prevent link being dropped in blank paper area
+    linkPinning: false,
+    // Enable link snapping within 20px lookup radius
     snapLinks: { radius: 20 },
+    snapLabels: true,
+    // Mark all available magnets
     markAvailable: true,
-    defaultLink: new joint.shapes.standard.Link(),
-    defaultConnectionPoint: {
-      name: 'boundary'
+    // Define default link
+    defaultLink: new joint.shapes.standard.DoubleLink({
+      z: -1,
+      attrs: {
+        line: {
+          stroke: '#fff',
+          strokeWidth: 14,
+          targetMarker: null
+        },
+        outline: {
+          strokeWidth: 18
+        }
+      },
+      labels: [
+        {
+          attrs: {
+            text: {
+              text: `type goes here`,
+              fontFamily: 'sans-serif',
+              fontSize: 10
+            },
+            rect: {
+              fillOpacity: 0.9
+            }
+          },
+          position: {
+            args: {
+              keepGradient: true,
+              ensureLegibility: true
+            }
+          }
+        }
+      ]
+    }),
+    //
+    defaultConnectionPoint: { name: 'anchor' },
+    defaultAnchor: (view, magnet, ...rest) => {
+      const group = view.findAttribute('port-group', magnet)
+      const anchorFn = group === 'in' ? joint.anchors.left : joint.anchors.right
+      return anchorFn(view, magnet, ...rest)
     },
+    defaultConnector: {
+      name: 'curve',
+      args: {
+        sourceDirection: joint.connectors.curve.TangentDirections.RIGHT,
+        targetDirection: joint.connectors.curve.TangentDirections.LEFT
+      }
+    },
+    defaultRouter: {
+      name: 'normal',
+      args: {
+        padding: 100
+      }
+    },
+
+    clickThreshold: 10,
+    magnetThreshold: 'onleave',
+
+    highlighting: {
+      connecting: {
+        name: 'mask',
+        options: {
+          layer: joint.dia.Paper.Layers.BACK,
+          attrs: {
+            stroke: '#0057FF',
+            'stroke-width': 3
+          }
+        }
+      }
+    },
+
+    // Controls which link connections can be made
     validateConnection: function (cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
       // Prevent linking from input ports
       if (magnetS && magnetS.getAttribute('port-group') === 'in') return false
@@ -131,6 +378,8 @@ onMounted(() => {
       // Prevent linking to output ports
       return magnetT && magnetT.getAttribute('port-group') === 'in'
     },
+
+    // decide whether to create a link if the user clicks a magnet
     validateMagnet: function (cellView, magnet) {
       // Prevent links from ports that already have a link
       const port = magnet.getAttribute('port')
@@ -150,6 +399,8 @@ onMounted(() => {
     }
   })
 
+  // paper.options.interactive = { touch: 'pan' }
+
   console.log('Initializing building blocks')
   graph.addCells(blocks.value.map((block) => block.buildingShape))
   console.log('Building blocks initialized, count: ', graph.getElements().length)
@@ -159,35 +410,46 @@ onMounted(() => {
 
   console.log('Initializing links')
   method.value?.connections.forEach((connection) => {
-    const link = new joint.shapes.standard.Link()
-    console.log('id', connection.id)
-
-    console.log('from', connection.from_method_block.id, 'to', connection.to_method_block.id)
-    console.log('from', connection.from_port.id, 'to', connection.to_port.id)
-
-    link.source({ id: connection.from_method_block_id, port: connection.from_port_id })
-    link.target({ id: connection.to_method_block_id, port: connection.to_port_id })
+    const link = new joint.shapes.standard.DoubleLink({
+      source: { id: connection.from_method_block_id, port: connection.from_port_id },
+      target: { id: connection.to_method_block_id, port: connection.to_port_id },
+      // router: { name: 'manhattan', args: { padding: 20 } },
+      // connector: { name: 'jumpover' },
+      attrs: {
+        line: {
+          stroke: '#fff',
+          strokeWidth: 14,
+          targetMarker: null
+        },
+        outline: {
+          strokeWidth: 18
+        }
+      },
+      labels: [
+        {
+          attrs: {
+            text: {
+              text: `type goes here`,
+              fontFamily: 'sans-serif',
+              fontSize: 10
+            },
+            rect: {
+              fillOpacity: 0.9
+            }
+          },
+          position: {
+            args: {
+              keepGradient: true,
+              ensureLegibility: true
+            }
+          }
+        }
+      ]
+    })
     graph.addCell(link)
+    link.toBack()
   })
 
-  // graph.getElements().forEach((cell) => {
-  //   const block = blockRepo.value.with('ports').find(cell.id)
-
-  //   if (!block) return
-  //   const ports = block.connectedPorts
-  //   ports.forEach((port) => {
-  //     if (port.direction === 'out') {
-  //       const sourcePort = portRepo.value.find(port.connected_to)
-  //       const link = new joint.shapes.standard.Link()
-  //       link.source({ id: cell.id, port: port.id })
-  //       link.target({
-  //         id: sourcePort.block_id,
-  //         port: sourcePort.id
-  //       })
-  //       graph.addCell(link)
-  //     }
-  //   })
-  // })
   console.log('Links initialized, count: ', graph.getLinks().length)
 
   // Register events
@@ -195,28 +457,89 @@ onMounted(() => {
     showLinkTools(linkView)
   })
 
+  paper.on('blank:pointerdown', function (event, x, y) {
+    console.log('cloick')
+
+    if (!paper) return
+
+    // we need to use the offset to local point function because x and y
+    // are always related to grid size
+
+    const coords = offsetToLocalPoint(
+      event.originalEvent.offsetX,
+      event.originalEvent.offsetY,
+      paper
+    )
+
+    const scale = paper.scale().sx
+
+    dragStartPosition = { x: coords.x * scale, y: coords.y * scale }
+  })
+
+  paper.on('cell:pointerup blank:pointerup', function () {
+    dragStartPosition = null
+  })
+
   paper.on('link:mouseleave', (linkView) => {
     linkView.removeTools()
   })
 
-  paper.on('element:mouseenter', (elementView) => {
-    elementView.addTools(
-      new joint.dia.ToolsView({
-        tools: [
-          new joint.linkTools.Boundary(),
-          new joint.linkTools.Remove({
-            distance: 20
-          })
-        ]
-      })
-    )
-  })
+  paper.on('element:mouseenter', (elementView) => {})
 
   paper.on('element:mouseleave', (elementView) => {
-    elementView.removeTools()
+    // elementView.removeTools()
+  })
+
+  paper.on('element:pointerdown', (elementView) => {
+    console.log('Element pointer down')
+
+    const position = elementView.model.getBBox()
+
+    elementDragStartPosition = { x: position.x, y: position.y }
+    console.log('Start drag')
+  })
+
+  paper.on('element:pointerup', (elementView) => {
+    if (!elementDragStartPosition) throw new Error('Element drag start position not set')
+
+    const position = elementView.model.getBBox()
+
+    if (elementDragStartPosition.x === position.x && elementDragStartPosition.y === position.y) {
+      console.log('Element not moved')
+      if (highlightElement) {
+        if (highlightElement.model.id === elementView.model.id) {
+          console.log('Element already selected, deselecting')
+          unselectElement(elementView)
+        } else {
+          console.log('Another element selected, deselecting')
+          unselectElement(elementView)
+          selectElement(elementView)
+        }
+      } else {
+        console.log('Selecting element')
+        selectElement(elementView)
+      }
+    } else {
+      console.log('Element moved')
+      undoStack.push({
+        type: 'elementMove',
+        id: elementView.model.id,
+        x: position.x,
+        y: position.y,
+        dx: position.x - elementDragStartPosition.x,
+        dy: position.y - elementDragStartPosition.y
+      })
+    }
   })
 
   graph.on('change:position', function (cell: any) {
+    console.log('Position changed')
+
+    // block position changed
+    // reroute links
+    graph.getLinks().forEach((link) => {
+      link.findView(paper).requestConnectionUpdate()
+    })
     const position = cell.getBBox()
 
     useRepo(Block).save({
@@ -261,8 +584,15 @@ onMounted(() => {
 
       // check if target id or target port is undefined
       if (!target.id || !target.port) {
-        // TODO: initiate block creation dialog
-        console.log('Block creation dialog initialization')
+        console.log(localMousePosition)
+
+        if (!localMousePosition) throw new Error('Local mouse position not set')
+        // Open modal at mouse position
+        blocksModalPosition.value = {
+          x: localMousePosition.x,
+          y: localMousePosition.y
+        }
+        blocksModalOpen.value = true
       }
 
       const targetPort = portRepo.value.find(target.port as string)
@@ -283,7 +613,7 @@ onMounted(() => {
     const tools = new joint.dia.ToolsView({
       tools: [
         new joint.linkTools.Remove({
-          distance: '50%',
+          distance: '95%',
           markup: [
             {
               tagName: 'circle',

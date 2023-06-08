@@ -34,10 +34,12 @@ if (localStorage.getItem('token')) {
 const app = createApp(App)
 
 app.use(createPinia().use(createORM()))
+app.use(GesturePlugin)
 app.use(router)
 
 import { PageSpinnerKey, SpinnerKey } from '@/symbols'
 import SvgIconVue from './components/SvgIcon.vue'
+import { GesturePlugin } from '@vueuse/gesture'
 app.provide(SpinnerKey, {
   visible: ref(false),
   show() {
