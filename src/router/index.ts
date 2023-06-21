@@ -72,16 +72,17 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'projects/:project',
         name: 'project',
+        redirect: { name: 'projectBackend' },
         component: () => import(/* webpackChunkName: "project" */ '../views/ProjectView.vue'),
         meta: {
           sidebar: ProjectSidebar
         },
         children: [
           {
-            path: '',
-            name: 'projectHub',
+            path: 'backend',
+            name: 'projectBackend',
             component: () =>
-              import(/* webpackChunkName: "projectHub" */ '../views/ProjectHubView.vue')
+              import(/* webpackChunkName: "projectBackend" */ '../views/ProjectBackendView.vue')
           },
           {
             path: 'methods',

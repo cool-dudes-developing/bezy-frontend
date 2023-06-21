@@ -2,22 +2,21 @@
   <div class="flex flex-col gap-2.5 px-5 py-7">
     <div class="flex flex-col gap-2.5">
       <header class="h-12 font-header text-3xl font-bold text-pink">Recent</header>
-      <div class="overflow-x-auto">
-        <div class="flex gap-3 min-w-fit whitespace-nowrap">
-          <CardComponent
-            link="/platform/projects/create"
-            primaryText="Create new project"
-            iconName="plus"
-          />
-          <CardComponent
-            v-for="project in projects"
-            :key="project.id"
-            :link="'/platform/projects/' + project.id"
-            :primaryText="project.name"
-            secondaryText="Open project"
-            :iconName="'folder-big'"
-          />
-        </div>
+      <div class="flex flex-wrap double-gap">
+        <CardComponent
+          v-if="projects.length == 0"
+          link="/platform/projects/create"
+          primaryText="Create new project"
+          iconName="plus"
+        />
+        <CardComponent
+          v-for="project in projects"
+          :key="project.id"
+          :link="'/platform/projects/' + project.id"
+          :primaryText="project.name"
+          secondaryText="Open project"
+          :iconName="'folder-big'"
+        />
       </div>
     </div>
   </div>
@@ -29,6 +28,10 @@ import Project from '@/models/Project'
 import { PageSpinnerKey, SpinnerKey } from '@/symbols'
 import { useRepo } from 'pinia-orm'
 import { inject, computed, onMounted } from 'vue'
+
+onMounted(() => {
+  console.log(projects.value)
+})
 
 const spinner = inject(SpinnerKey)
 const pageSpinner = inject(PageSpinnerKey)
@@ -63,5 +66,9 @@ function pageLoaderTest() {
   gap: 2.5rem;
   min-width: fit-content;
   white-space: nowrap;
+}
+
+.double-gap {
+  gap: 0.75rem 1%;
 }
 </style>
