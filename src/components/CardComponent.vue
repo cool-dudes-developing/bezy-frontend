@@ -1,7 +1,7 @@
 <template>
   <router-link
     :to="link"
-    class="flex flex-col justify-between p-2.5 gap-2.5 bg-background-400 rounded-lg w-96 h-48"
+    class="flex flex-col justify-between p-2.5 gap-2.5 bg-background-400 rounded-lg min-w-[32.5%] h-48"
   >
     <svg-icon :name="iconName"></svg-icon>
     <div class="flex flex-col justify-center items-end">

@@ -2,9 +2,9 @@
   <div class="flex flex-col items-center justify-center gap-2.5 w-full h-full">
     <form action="" class="flex flex-col gap-2.5" @submit.prevent="create">
       <header class="h-12 font-header text-3xl font-bold text-pink">Create new endpoint</header>
-      <InputComponent name="Method name" v-model="name"></InputComponent>
+      <InputComponent name="Endpoint name" v-model="name"></InputComponent>
       <label for="description" class="h-[1.375rem] font-label flex items-center text-white"
-        >Method description</label
+        >Endpoint description</label
       >
       <textarea
         v-model="description"

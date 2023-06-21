@@ -25,7 +25,7 @@ import InputComponent from '@/components/InputComponent.vue'
 import Project from '@/models/Project'
 import { PageSpinnerKey } from '@/symbols'
 import { inject, ref } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const name = ref('')
@@ -38,9 +38,9 @@ function create() {
     name: name.value,
     description: description.value
   })
-  .then(() => {
-    router.push({ name: 'projects' })
-  })
-  .finally(() => pageSpinner?.hide())
+    .then(() => {
+      router.push({ name: 'projects' })
+    })
+    .finally(() => pageSpinner?.hide())
 }
 </script>

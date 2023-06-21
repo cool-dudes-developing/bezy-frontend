@@ -24,6 +24,12 @@
               <svg-icon name="trashcan" @click.stop="destroy(project.id)"></svg-icon>
             </td>
           </tr>
+          <tr
+            class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+            @click="$router.push({ name: 'createProject' })"
+          >
+            <td class="text-center text-blue font-bold" colspan="4">+</td>
+          </tr>
         </template>
       </TableComponent>
       <div v-else class="flex flex-col w-fit gap-2">
