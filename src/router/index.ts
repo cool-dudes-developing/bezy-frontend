@@ -160,6 +160,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     redirect: { name: '404' }
+  },
+  {
+    path: '/frontendbuilder',
+    name: 'frontendBuilder',
+    component: () => import(/* webpackChunkName: "frontendBuilder" */ '../views/FrontendEditorView.vue')
   }
 ]
 
