@@ -1,22 +1,17 @@
 <template>
-  <div>
-    <!-- <button @click="addObject" class="bg-blue text-black">
-      <svg-icon name="plus-small-blue" class="h-4 w-4" />
-      Add div
-    </button>
-    <div v-for="div in divs" :key="div.id" :style="div.style" draggable="true" class="absolute">
-      {{ div.content + div.id }}
-    </div> -->
-
-    <DOMRenderer :node="dom"/>
-    <button @click="addDiv" class="bg-blue text-black mr-4 h-8 px-2">
-      <!-- <svg-icon name="plus-small-blue" class="h-4 w-4" /> -->
-      Add div
-    </button>
-    <button @click="showDOMLog" class="bg-blue text-black mr-4 h-8 px-2">
-      <!-- <svg-icon name="clock" class="h-4 w-4" /> -->
-      Show DOM log
-    </button>
+  <div class="flex flex-row">
+    <DOMRenderer :node="dom" class="grow" @pass-component="selectComponent"/>
+    <textarea v-model="dom.children[divSelector].attrs.style" class="grow text-black resize-none outline-none"></textarea>
+    <div class="flex flex-col gap-3">
+      <button @click="addDiv" class="bg-blue text-black h-8 px-2">
+        <!-- <svg-icon name="plus-small-blue" class="h-4 w-4" /> -->
+        Add div 
+      </button>
+      <button @click="showDOMLog" class="bg-blue text-black h-8 px-2">
+        <!-- <svg-icon name="clock" class="h-4 w-4" /> -->
+        Show DOM log
+      </button>
+    </div>
   </div>
 </template>
 
@@ -27,7 +22,8 @@ import DOMRenderer from '@/components/DOMRenderer.vue';
 import SpinnerLoader from '@/components/SpinnerLoader.vue';
 
 const router = useRouter()
-const newDivId = ref(0)
+const newDivId = ref(1)
+const divSelector = ref(0)
 
 function addDiv(){
   dom.value.children.push({
@@ -35,18 +31,36 @@ function addDiv(){
     innerText: 'New div ' + newDivId.value.toString(),
     attrs: {
       id: 'newDiv' + newDivId.value.toString(), 
-      class: 'resize overflow-scroll bg-blue text-black',
+      style: "background-color:#69e5f8;color:black;",
+      class: "resize overflow-scroll"
     }})
 
   newDivId.value++;
 }
 
+function selectComponent(id: any) {
+  dom.value.children.forEach((el, index) => {
+    if(el.attrs.id == id){
+      divSelector.value = index
+    }
+  })
+  console.log('divSelector value: ' + divSelector.value)
+}
+
 const dom = ref({
   tag:'div',
   attrs: {
+    id: 'Dom',
     class: 'h-screen'
   },
-  children: [{}]
+  children: [{
+    tag:'div',
+    attrs: {
+      id: 'newDiv0',
+      style: "background-color:#375613;color:black;"
+    },
+    innerText: 'New div 0'
+  }]
 })
 
 function showDOMLog(){

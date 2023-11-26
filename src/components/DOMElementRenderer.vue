@@ -1,5 +1,5 @@
 <template>
-  <component :is="node.tag" v-bind="node.attrs">
+  <component :is="node.tag" v-bind="node.attrs" @click="getComponentId">
     <slot>
       {{ node.innerText }}
     </slot>
@@ -12,4 +12,13 @@ const props = defineProps({
     required: true
   }
 })
+
+const emit = defineEmits(["selectComponent"])
+
+function getComponentId() {
+  if(props.node.attrs.id != 'Dom'){
+    console.log('component id emmited with value ' + props.node.attrs.id)
+    emit("selectComponent", props.node.attrs.id)
+  }
+}
 </script>
