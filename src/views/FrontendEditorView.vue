@@ -58,7 +58,6 @@ const router = useRouter()
 const newDivId = ref(1)
 const divSelector = ref(0)
 const selectedComponent = ref(dom.value.children[0])
-const isFound = ref(false)
 
 function addDiv(){
   dom.value.children.push({
@@ -76,7 +75,6 @@ function addDiv(){
 
 function selectComponent(id: String) {
   selectedComponent.value = null
-  isFound.value = false
   dom.value.children.forEach((el) => {
     if(selectedComponent.value != null) {
         return
