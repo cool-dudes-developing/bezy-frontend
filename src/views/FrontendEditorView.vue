@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-row">
     <DOMRenderer :node="dom" class="grow" @pass-component="selectComponent"/>
-    <textarea v-model="dom.children[divSelector].attrs.style" class="grow text-black resize-none outline-none"></textarea>
+    <textarea v-model="selectedComponent.attrs.style" class="grow text-black resize-none outline-none"></textarea>
     <div class="flex flex-col gap-3">
       <button @click="addDiv" class="bg-blue text-black h-8 px-2">
         <!-- <svg-icon name="plus-small-blue" class="h-4 w-4" /> -->
@@ -19,33 +19,6 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import DOMRenderer from '@/components/DOMRenderer.vue'
-
-const router = useRouter()
-const newDivId = ref(1)
-const divSelector = ref(0)
-
-function addDiv(){
-  dom.value.children.push({
-    tag: 'div', 
-    innerContent: 'New div ' + newDivId.value.toString(),
-    attrs: {
-      id: 'newDiv' + newDivId.value.toString(), 
-      style: "background-color:#69e5f8;color:black;"
-    },
-    children: []
-  })
-
-  newDivId.value++;
-}
-
-function selectComponent(id: any) {
-  dom.value.children.forEach((el, index) => {
-    if(el.attrs.id == id){
-      divSelector.value = index
-    }
-  })
-  console.log('divSelector value: ' + divSelector.value)
-}
 
 const dom = ref({
   tag:'div',
@@ -80,6 +53,61 @@ const dom = ref({
     ]
   }]
 })
+
+const router = useRouter()
+const newDivId = ref(1)
+const divSelector = ref(0)
+const selectedComponent = ref(dom.value.children[0])
+const isFound = ref(false)
+
+function addDiv(){
+  dom.value.children.push({
+    tag: 'div', 
+    innerContent: 'New div ' + newDivId.value.toString(),
+    attrs: {
+      id: 'newDiv' + newDivId.value.toString(), 
+      style: "background-color:#69e5f8;color:black;"
+    },
+    children: []
+  })
+
+  newDivId.value++;
+}
+
+function selectComponent(id: String) {
+  selectedComponent.value = null
+  isFound.value = false
+  dom.value.children.forEach((el) => {
+    if(selectedComponent.value != null) {
+        return
+    }
+    findComponent(id, el)
+    console.log(selectedComponent.value)
+    // if(el.children.length > 0) {
+    //   selectedComponent.value = findComponent(id, el)
+    // }
+    // if(el.attrs.id == id) {
+    //   selectedComponent.value = el
+    // }
+  })
+  if(selectedComponent.value != null) {
+    console.log('selectedComponent id: ' + selectedComponent.value.attrs.id)
+    return 
+  }
+  console.log('No component was found.')
+}
+
+function findComponent(id: String, el: any) {
+  if(el.attrs.id == id) {
+    selectedComponent.value = el
+  }
+  if(el.children.length > 0) {
+    el.children.forEach((child: any) => {
+      findComponent(id, child)
+    })
+  }
+  // console.log(el.attrs.id)
+}
 
 function showDOMLog(){
   console.log(dom.value.children);
