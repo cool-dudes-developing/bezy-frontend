@@ -18,8 +18,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
-import DOMRenderer from '@/components/DOMRenderer.vue';
-import SpinnerLoader from '@/components/SpinnerLoader.vue';
+import DOMRenderer from '@/components/DOMRenderer.vue'
 
 const router = useRouter()
 const newDivId = ref(1)
@@ -28,12 +27,13 @@ const divSelector = ref(0)
 function addDiv(){
   dom.value.children.push({
     tag: 'div', 
-    innerText: 'New div ' + newDivId.value.toString(),
+    innerContent: 'New div ' + newDivId.value.toString(),
     attrs: {
       id: 'newDiv' + newDivId.value.toString(), 
-      style: "background-color:#69e5f8;color:black;",
-      class: "resize overflow-scroll"
-    }})
+      style: "background-color:#69e5f8;color:black;"
+    },
+    children: []
+  })
 
   newDivId.value++;
 }
@@ -59,7 +59,25 @@ const dom = ref({
       id: 'newDiv0',
       style: "background-color:#375613;color:black;"
     },
-    innerText: 'New div 0'
+    innerContent: 'New div 0',
+    children: [{
+      tag:'div',
+      attrs: {
+        id: 'newDiv999',
+        style: "background-color:#ff5613;color:black;"
+      },
+      innerContent: 'New div 999',
+      children: []
+    },{
+      tag:'div',
+      attrs: {
+        id: 'newDivX',
+        style: "background-color:#00ff13;color:black;"
+      },
+      innerContent: 'New div X',
+      children: []
+    }
+    ]
   }]
 })
 

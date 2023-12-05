@@ -1,7 +1,7 @@
 <template>
-  <component :is="node.tag" v-bind="node.attrs" @click="getComponentId">
+  <component :is="node.tag" v-bind="node.attrs" @click.stop="getComponentId">
+    {{ node.innerContent }}
     <slot>
-      {{ node.innerText }}
     </slot>
   </component>
 </template>
