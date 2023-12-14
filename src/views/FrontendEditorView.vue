@@ -1,79 +1,47 @@
 <template>
   <div class="flex flex-row">
     <DOMRenderer :node="dom" class="grow" @pass-component="selectComponent"/>
-    <FrontendElementEditor class="flex flex-col p-2 w-[250px] overflow-hidden">
-      <div class="flex flex-row gap-3">
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>W</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['width']"
-            @change ="updateStyle(['width', $event.target.value])">
-        </div>
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>H</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['height']"
-            @change ="updateStyle(['height', $event.target.value])">
-        </div>
-      </div>
-      <div class="flex flex-row gap-3">
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>BGC</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['background-color']"
-            @change ="updateStyle(['background-color', $event.target.value])">
-        </div>
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>TC</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['color']"
-            @change ="updateStyle(['color', $event.target.value])">
-        </div>
-      </div>
-      <div class="flex flex-row gap-3">
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>PL</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['padding-left']"
-            @change ="updateStyle(['padding-left', $event.target.value])">
-        </div>
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>PR</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['padding-right']"
-            @change ="updateStyle(['padding-right', $event.target.value])">
-        </div>
-      </div>
-      <div class="flex flex-row gap-3">
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>PT</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['padding-top']"
-            @change ="updateStyle(['padding-top', $event.target.value])">
-        </div>
-        <div class="flex flex-row gap-3 px-1 w-1/2 h-8 items-center">
-          <p>PB</p>
-          <input 
-            class="bg-transparent focus:outline-none overflow-scroll"
-            type="text"
-            :value="selectedComponentStyle['padding-bottom']"
-            @change ="updateStyle(['padding-bottom', $event.target.value])">
-        </div>
-      </div>
+    <FrontendElementEditor>
+      <FrontendElementEditorInputContainer>
+        <FrontendElementEditorInput
+          label="W" 
+          :model-value="selectedComponentStyle['width']"
+          @update:model-value="newValue => updateStyle(['width', newValue])"/>
+        <FrontendElementEditorInput 
+          label="H" 
+          :model-value="selectedComponentStyle['height']"
+          @update:model-value="newValue => updateStyle(['height', newValue])"/>
+      </FrontendElementEditorInputContainer>
+      <FrontendElementEditorInputContainer>
+        <FrontendElementEditorInput 
+          label="BGC" 
+          :model-value="selectedComponentStyle['background-color']"
+          @update:model-value="newValue => updateStyle(['background-color', newValue])"/>
+        <FrontendElementEditorInput 
+          label="TC" 
+          :model-value="selectedComponentStyle['color']"
+          @update:model-value="newValue => updateStyle(['color', newValue])"/>
+      </FrontendElementEditorInputContainer>
+      <FrontendElementEditorInputContainer>
+        <FrontendElementEditorInput 
+          label="PL" 
+          :model-value="selectedComponentStyle['padding-left']"
+          @update:model-value="newValue => updateStyle(['padding-left', newValue])"/>
+        <FrontendElementEditorInput 
+          label="PR" 
+          :model-value="selectedComponentStyle['padding-right']"
+          @update:model-value="newValue => updateStyle(['padding-right', newValue])"/>
+      </FrontendElementEditorInputContainer>
+      <FrontendElementEditorInputContainer>
+        <FrontendElementEditorInput 
+            label="PT" 
+            :model-value="selectedComponentStyle['padding-top']"
+            @update:model-value="newValue => updateStyle(['padding-top', newValue])"/>
+        <FrontendElementEditorInput 
+            label="PB" 
+            :model-value="selectedComponentStyle['padding-bottom']"
+            @update:model-value="newValue => updateStyle(['padding-bottom', newValue])"/>
+      </FrontendElementEditorInputContainer>
       <div class="grow flex flex-col gap-3 justify-end">
         <div class="flex flex-row gap-3">
           <button @click="addDiv" class="bg-blue text-black w-1/2 h-8 px-2 rounded">
@@ -96,6 +64,8 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import DOMRenderer from '@/components/DOMRenderer.vue'
 import FrontendElementEditor from '@/components/FrontendElementEditor.vue'
+import FrontendElementEditorInput from '@/components/FrontendElementEditorInput.vue'
+import FrontendElementEditorInputContainer from '@/components/FrontendElementEditorInputContainer.vue'
 
 const dom = ref({
   tag:'div',
