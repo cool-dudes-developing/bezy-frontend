@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row">
-    <DOMRenderer :node="dom" class="grow" @pass-component="selectComponent"/>
+    <DOMRenderer :node="dom" class="border flex flex-col grow" @pass-component="selectComponent"/>
     <FrontendElementEditor>
       <InputContainer>
         <Input
@@ -21,6 +21,16 @@
           label="TC" 
           :model-value="selectedComponentStyle['color']"
           @update:model-value="newValue => updateStyle('color', newValue)"/>
+      </InputContainer>
+      <InputContainer>
+        <Input
+          label="PX"
+          :model-value="selectedComponentStyle['padding-x']"
+          @update:model-value="newValue => updateStyle('padding-x', newValue)"/>
+        <Input
+          label="PY"
+          :model-value="selectedComponentStyle['padding-y']"
+          @update:model-value="newValue => updateStyle('padding-y', newValue)"/>
       </InputContainer>
       <!-- <InputContainer>
         <Input 
@@ -83,7 +93,12 @@ const dom = ref({
           'width:auto;'+
           'height:auto;'+ 
           'background-color:#69e5f8;'+
-          'color:black;'
+          'color:black;'+
+          'margin:5px;'+
+          'border-style:solid;'+
+          'border-width:1px;'+
+          'padding-x:0;'+
+          'padding-y:0;'
       },
       children: []
     }
@@ -107,7 +122,12 @@ function addDiv() {
         'width:auto;'+
         'height:auto;'+
         'background-color:#69e5f8;'+
-        'color:black;'
+        'color:black;'+
+        'margin:5px;'+
+        'border-style:solid;'+
+        'border-width:1px;'+
+        'padding-x:0;'+
+        'padding-y:0;'
     },
     children: []
   })
@@ -169,6 +189,13 @@ function getComponentStyle() {
 
 function updateStyle(key: string, value: string) {
   selectedComponentStyle.value[key] = value
+  if(key == 'padding-x') {
+    selectedComponentStyle.value['padding-left'] = value
+    selectedComponentStyle.value['padding-right'] = value
+  } else if(key == 'padding-y') {
+    selectedComponentStyle.value['padding-top'] = value
+    selectedComponentStyle.value['padding-bottom'] = value
+  }
   updateAllStyles()
 }
 

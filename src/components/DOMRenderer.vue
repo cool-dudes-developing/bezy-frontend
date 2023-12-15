@@ -1,6 +1,6 @@
 <template>
-  <DOMElementRenderer :node="node" class="border p-1 flex flex-col gap-1" @select-component="getSelectedComponent">
-    <draggableComponent :style="node.attrs.style + 'background-color:transparent;'" v-model="node.children" group="nodes" @start="drag = true" @end="drag = false" item-key="id">
+  <DOMElementRenderer :node="node" @select-component="getSelectedComponent">
+    <draggableComponent class="w-full h-full min-w-[20px] min-h-[20px]" v-model="node.children" group="nodes" @start="drag = true" @end="drag = false" item-key="id">
       <template #item="{element}">
         <DOMRenderer :node="element" v-if="element.tag === 'div'" @pass-component="passSelectedComponent"/>
         <DOMElementRenderer :node="element" v-else/>
