@@ -5,7 +5,7 @@
         class="bg-transparent focus:outline-none overflow-scroll"
         type="text"
         :value="modelValue"
-        @change ="$emit('update:modelValue', $event.target.value)">
+        @change ="$emit('update:modelValue', $event?.target?.value)">
     </div>
 </template>
 
