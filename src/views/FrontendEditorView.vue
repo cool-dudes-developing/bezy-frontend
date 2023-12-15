@@ -2,46 +2,46 @@
   <div class="flex flex-row">
     <DOMRenderer :node="dom" class="grow" @pass-component="selectComponent"/>
     <FrontendElementEditor>
-      <FrontendElementEditorInputContainer>
-        <FrontendElementEditorInput
+      <InputContainer>
+        <Input
           label="W" 
           :model-value="selectedComponentStyle['width']"
-          @update:model-value="newValue => updateStyle(['width', newValue])"/>
-        <FrontendElementEditorInput 
+          @update:model-value="newValue => updateStyle('width', newValue)"/>
+        <Input 
           label="H" 
           :model-value="selectedComponentStyle['height']"
-          @update:model-value="newValue => updateStyle(['height', newValue])"/>
-      </FrontendElementEditorInputContainer>
-      <FrontendElementEditorInputContainer>
-        <FrontendElementEditorInput 
+          @update:model-value="newValue => updateStyle('height', newValue)"/>
+      </InputContainer>
+      <InputContainer>
+        <Input 
           label="BGC" 
           :model-value="selectedComponentStyle['background-color']"
-          @update:model-value="newValue => updateStyle(['background-color', newValue])"/>
-        <FrontendElementEditorInput 
+          @update:model-value="newValue => updateStyle('background-color', newValue)"/>
+        <Input 
           label="TC" 
           :model-value="selectedComponentStyle['color']"
-          @update:model-value="newValue => updateStyle(['color', newValue])"/>
-      </FrontendElementEditorInputContainer>
-      <FrontendElementEditorInputContainer>
-        <FrontendElementEditorInput 
+          @update:model-value="newValue => updateStyle('color', newValue)"/>
+      </InputContainer>
+      <!-- <InputContainer>
+        <Input 
           label="PL" 
           :model-value="selectedComponentStyle['padding-left']"
           @update:model-value="newValue => updateStyle(['padding-left', newValue])"/>
-        <FrontendElementEditorInput 
+        <Input 
           label="PR" 
           :model-value="selectedComponentStyle['padding-right']"
           @update:model-value="newValue => updateStyle(['padding-right', newValue])"/>
-      </FrontendElementEditorInputContainer>
-      <FrontendElementEditorInputContainer>
-        <FrontendElementEditorInput 
+      </InputContainer>
+      <InputContainer>
+        <Input 
             label="PT" 
             :model-value="selectedComponentStyle['padding-top']"
             @update:model-value="newValue => updateStyle(['padding-top', newValue])"/>
-        <FrontendElementEditorInput 
+        <Input 
             label="PB" 
             :model-value="selectedComponentStyle['padding-bottom']"
             @update:model-value="newValue => updateStyle(['padding-bottom', newValue])"/>
-      </FrontendElementEditorInputContainer>
+      </InputContainer> -->
       <div class="grow flex flex-col gap-3 justify-end">
         <div class="flex flex-row gap-3">
           <button @click="addDiv" class="bg-blue text-black w-1/2 h-8 px-2 rounded">
@@ -64,52 +64,38 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import DOMRenderer from '@/components/DOMRenderer.vue'
 import FrontendElementEditor from '@/components/FrontendElementEditor.vue'
-import FrontendElementEditorInput from '@/components/FrontendElementEditorInput.vue'
-import FrontendElementEditorInputContainer from '@/components/FrontendElementEditorInputContainer.vue'
+import Input from '@/components/FrontendElementEditorInput.vue'
+import InputContainer from '@/components/FrontendElementEditorInputContainer.vue'
 
 const dom = ref({
-  tag:'div',
+  tag: 'div',
   attrs: {
     id: 'Dom',
     class: 'h-screen'
   },
   children: [
-    //{
-    // tag:'div',
-    // attrs: {
-    //   id: 'newDiv0',
-    //   style: "background-color:#375613;color:black;width:400px;"
-    // },
-    // innerContent: 'New div 0',
-    // children: [{
-    //   tag:'div',
-    //   attrs: {
-    //     id: 'newDiv999',
-    //     style: "background-color:#ff5613;color:black;width:350px;"
-    //   },
-    //   innerContent: 'New div 999',
-    //   children: []
-    // },{
-    //   tag:'div',
-    //   attrs: {
-    //     id: 'newDivX',
-    //     style: "background-color:#00ff13;color:black;width:350px;"
-    //   },
-    //   innerContent: 'New div X',
-    //   children: []
-    // }
-    // ]
-  //}
+    {
+      tag: 'div',
+      innerContent: 'Test div',
+      attrs: {
+        id: 'testDiv',
+        style: 
+          'width:auto;'+
+          'height:auto;'+ 
+          'background-color:#69e5f8;'+
+          'color:black;'
+      },
+      children: []
+    }
 ]
 })
 
 const router = useRouter()
-const newDivId = ref(1)
-// const divSelector = ref(0)
-const strStart = ref()
-const strEnd = ref()
+const newDivId = ref(0)
+const isNewSelected = ref(false)
 const selectedComponent = ref(dom.value.children[0])
-const selectedComponentStyle = ref({})
+type Style = { [propKey: string]: string }
+const selectedComponentStyle = ref<Style>({})
 
 function addDiv() {
   dom.value.children.push({
@@ -117,30 +103,27 @@ function addDiv() {
     innerContent: 'New div ' + newDivId.value.toString(),
     attrs: {
       id: 'newDiv' + newDivId.value.toString(), 
-      style: "background-color:#69e5f8;color:black;width:auto;height:auto;padding-left:0;padding-right:0;padding-top:0;padding-bottom:0;"
+      style:
+        'width:auto;'+
+        'height:auto;'+
+        'background-color:#69e5f8;'+
+        'color:black;'
     },
     children: []
   })
-
   newDivId.value++;
 }
 
 function selectComponent(id: String) {
-  selectedComponent.value = null
+  isNewSelected.value = false
   dom.value.children.forEach((el) => {
-    if(selectedComponent.value != null) {
+    if(isNewSelected.value) {
         return
     }
     findComponent(id, el)
     console.log(selectedComponent.value)
-    // if(el.children.length > 0) {
-    //   selectedComponent.value = findComponent(id, el)
-    // }
-    // if(el.attrs.id == id) {
-    //   selectedComponent.value = el
-    // }
   })
-  if(selectedComponent.value != null) {
+  if(isNewSelected.value) {
     getComponentStyle()
     console.log('selectedComponent id: ' + selectedComponent.value.attrs.id)
     return 
@@ -151,6 +134,7 @@ function selectComponent(id: String) {
 function findComponent(id: String, el: any) {
   if(el.attrs.id == id) {
     selectedComponent.value = el
+    isNewSelected.value = true
   }
   if(el.children.length > 0) {
     el.children.forEach((child: any) => {
@@ -183,14 +167,14 @@ function getComponentStyle() {
   console.log(selectedComponentStyle.value)
 }
 
-function updateStyle(newValue: String) {
-  selectedComponentStyle.value[newValue[0]] = newValue[1]
+function updateStyle(key: string, value: string) {
+  selectedComponentStyle.value[key] = value
   updateAllStyles()
 }
 
 function updateAllStyles() {
   let style = ""
-  Object.keys(selectedComponentStyle.value).forEach((key: any) => {
+  Object.keys(selectedComponentStyle.value).forEach((key: string) => {
     style += key + ":" + selectedComponentStyle.value[key] +";"
   })
   console.log(style)
