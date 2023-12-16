@@ -1,8 +1,8 @@
 <template>
-  <DOMElementRenderer :node="node" @select-component="getSelectedComponent">
+  <DOMElementRenderer :node="node" @pass-component-id="passComponentId">
     <draggableComponent class="w-full h-full min-w-[20px] min-h-[20px]" v-model="node.children" group="nodes" @start="drag = true" @end="drag = false" item-key="id">
       <template #item="{element}">
-        <DOMRenderer :node="element" v-if="element.tag === 'div'" @pass-component="passSelectedComponent"/>
+        <DOMRenderer :node="element" v-if="element.tag === 'div'" @pass-component-id="passComponentId"/>
         <DOMElementRenderer :node="element" v-else/>
       </template>
       <!-- <template v-for="child in node.children" :key="child.id">
@@ -26,14 +26,10 @@ const props = defineProps({
 
 const drag = ref(false)
 
-const emit = defineEmits(["passComponent"])
+const emit = defineEmits(["passComponentId"])
 
-function getSelectedComponent(id: any) {
-  console.log("component id received and passed with value " + id)
-  passSelectedComponent(id)
-}
-
-function passSelectedComponent(id: any) {
-  emit("passComponent", id)
+function passComponentId(id: any) {
+  // console.log("component id received and passed with value " + id)
+  emit("passComponentId", id)
 }
 </script>

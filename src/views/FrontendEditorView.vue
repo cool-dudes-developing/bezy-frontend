@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row">
-    <DOMRenderer :node="dom" class="border flex flex-col grow" @pass-component="selectComponent"/>
+    <DOMRenderer :node="dom" class="border flex flex-col grow" @pass-component-id="selectComponent"/>
     <FrontendElementEditor>
       <InputContainer>
         <Input
@@ -105,7 +105,11 @@ const dom = ref({
 ]
 })
 
-const router = useRouter()
+const customStyle = [
+  'padding-x',
+  'padding-y'
+]
+
 const newDivId = ref(0)
 const isNewSelected = ref(false)
 const selectedComponent = ref(dom.value.children[0])
@@ -189,14 +193,23 @@ function getComponentStyle() {
 
 function updateStyle(key: string, value: string) {
   selectedComponentStyle.value[key] = value
-  if(key == 'padding-x') {
-    selectedComponentStyle.value['padding-left'] = value
-    selectedComponentStyle.value['padding-right'] = value
-  } else if(key == 'padding-y') {
-    selectedComponentStyle.value['padding-top'] = value
-    selectedComponentStyle.value['padding-bottom'] = value
+  if(customStyle.includes(key)){
+    updateCustomStyle(key, value)
   }
   updateAllStyles()
+}
+
+function updateCustomStyle(key: string, value: string) {
+  switch(key) {
+    case 'padding-x':
+      selectedComponentStyle.value['padding-left'] = value
+      selectedComponentStyle.value['padding-right'] = value
+      break;
+    case 'padding-y':
+      selectedComponentStyle.value['padding-top'] = value
+      selectedComponentStyle.value['padding-bottom'] = value
+      break;
+  }
 }
 
 function updateAllStyles() {

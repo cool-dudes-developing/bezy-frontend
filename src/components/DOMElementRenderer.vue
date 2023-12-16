@@ -13,12 +13,13 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(["selectComponent"])
+const emit = defineEmits(["passComponentId"])
 
 function getComponentId() {
-  if(props.node.attrs.id != 'Dom'){
-    console.log('component id emmited with value ' + props.node.attrs.id)
-    emit("selectComponent", props.node.attrs.id)
+  if(props.node.attrs.id == 'Dom'){
+    return
   }
+  // console.log('component id emmited with value ' + props.node.attrs.id)
+  emit("passComponentId", props.node.attrs.id)
 }
 </script>
