@@ -1,36 +1,46 @@
 <template>
   <div class="flex flex-row">
-    <DOMRenderer :node="dom" class="border flex flex-col grow" @pass-component-id="selectComponent"/>
+    <DOMRenderer 
+      :node="dom" 
+      class="border flex flex-col grow" 
+      @pass-component-id="selectComponent"
+    />
     <FrontendElementEditor>
       <InputContainer>
         <Input
           label="W" 
           :model-value="selectedComponentStyle['width']"
-          @update:model-value="newValue => updateStyle('width', newValue)"/>
+          @update:model-value="newValue => updateStyle('width', newValue)"
+        />
         <Input 
           label="H" 
           :model-value="selectedComponentStyle['height']"
-          @update:model-value="newValue => updateStyle('height', newValue)"/>
+          @update:model-value="newValue => updateStyle('height', newValue)"
+        />
       </InputContainer>
       <InputContainer>
         <Input 
           label="BGC" 
           :model-value="selectedComponentStyle['background-color']"
-          @update:model-value="newValue => updateStyle('background-color', newValue)"/>
+          @update:model-value="newValue => updateStyle('background-color', newValue)"
+        />
         <Input 
           label="TC" 
           :model-value="selectedComponentStyle['color']"
-          @update:model-value="newValue => updateStyle('color', newValue)"/>
+          @update:model-value="newValue => updateStyle('color', newValue)"
+        />
       </InputContainer>
       <InputContainer>
         <Input
           label="PX"
           :model-value="selectedComponentStyle['padding-x']"
-          @update:model-value="newValue => updateStyle('padding-x', newValue)"/>
+          @update:model-value="newValue => updateStyle('padding-x', newValue)"
+        />
         <Input
           label="PY"
           :model-value="selectedComponentStyle['padding-y']"
-          @update:model-value="newValue => updateStyle('padding-y', newValue)"/>
+          @update:model-value="newValue => updateStyle('padding-y', newValue)"
+        />
       </InputContainer>
       <!-- <InputContainer>
         <Input 
@@ -70,7 +80,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import DOMRenderer from '@/components/DOMRenderer.vue'
 import FrontendElementEditor from '@/components/FrontendElementEditor.vue'
@@ -138,7 +147,7 @@ function addDiv() {
   newDivId.value++;
 }
 
-function selectComponent(id: String) {
+function selectComponent(id: string) {
   isNewSelected.value = false
   dom.value.children.forEach((el) => {
     if(isNewSelected.value) {
@@ -155,7 +164,7 @@ function selectComponent(id: String) {
   console.log('No component was found.')
 }
 
-function findComponent(id: String, el: any) {
+function findComponent(id: string, el: any) {
   if(el.attrs.id == id) {
     selectedComponent.value = el
     isNewSelected.value = true

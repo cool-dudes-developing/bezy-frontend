@@ -1,20 +1,33 @@
 <template>
-  <DOMElementRenderer :node="node" @pass-component-id="passComponentId">
-    <draggableComponent class="w-full h-full min-w-[20px] min-h-[20px]" v-model="node.children" group="nodes" @start="drag = true" @end="drag = false" item-key="id">
+  <DOMElementRenderer 
+    :node="node" 
+    @pass-component-id="passComponentId"
+  >
+    <DraggableComponent
+      :class="draggableComponentStyles" 
+      v-model="node.children" 
+      group="nodes" 
+      item-key="id"
+      @start="startDrag" 
+      @end="endDrag"
+      >
       <template #item="{element}">
-        <DOMRenderer :node="element" v-if="element.tag === 'div'" @pass-component-id="passComponentId"/>
-        <DOMElementRenderer :node="element" v-else/>
+        <DOMRenderer 
+          :node="element" 
+          v-if="element.tag === 'div'" 
+          @pass-component-id="passComponentId"
+        />
+        <DOMElementRenderer 
+          :node="element" 
+          v-else
+        />
       </template>
-      <!-- <template v-for="child in node.children" :key="child.id">
-        <DOMRenderer :node="child" v-if="child.tag === 'div'" @pass-component="passSelectedComponent"/>
-        <DOMElementRenderer :node="child" v-else/>
-      </template> -->
-    </draggableComponent>
+    </DraggableComponent>
   </DOMElementRenderer>
 </template>
 <script setup lang="ts">
 import DOMElementRenderer from './DOMElementRenderer.vue'
-import draggableComponent from 'vuedraggable'
+import DraggableComponent from 'vuedraggable'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -24,12 +37,65 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits([
+  "passComponentId",
+  // "isDragged"
+])
+
+const draggableComponentStyles = ref(
+  'w-full '+ 
+  'h-full '+
+  'min-w-[20px] '+
+  'min-h-[20px] '
+)
+
 const drag = ref(false)
 
-const emit = defineEmits(["passComponentId"])
-
-function passComponentId(id: any) {
+function passComponentId(id: string) {
   // console.log("component id received and passed with value " + id)
   emit("passComponentId", id)
 }
+
+function startDrag() {
+  drag.value = true
+  // emit("isDragged", true)
+  // draggableComponentStyles.value = 
+  //   'w-full '+ 
+  //   'h-full '+
+  //   'min-w-[20px] '+
+  //   'min-h-[20px] '+
+  //   'border '+
+  //   'border-dashed'
+}
+
+function endDrag() {
+  drag.value = false
+  // emit("isDragged", false)
+  // draggableComponentStyles.value = 
+  //   'w-full '+ 
+  //   'h-full '+
+  //   'min-w-[20px] '+
+  //   'min-h-[20px] '
+}
+
+// function changeDraggableStyle(isDragged: boolean) {
+//   console.log(isDragged)
+//   if(isDragged) {
+//     draggableComponentStyles.value = 
+//       'w-full '+ 
+//       'h-full '+
+//       'min-w-[20px] '+
+//       'min-h-[20px] '+
+//       'border '+
+//       'border-dashed'
+//   } else {
+//     draggableComponentStyles.value = 
+//       'w-full '+ 
+//       'h-full '+
+//       'min-w-[20px] '+
+//       'min-h-[20px] '
+//   }
+  
+//   emit("isDragged", isDragged)
+// }
 </script>
