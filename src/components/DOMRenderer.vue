@@ -4,7 +4,7 @@
     @pass-component-id="passComponentId"
   >
     <DraggableComponent
-      :class="draggableComponentStyles" 
+      :class="globalStates.draggableComponentStyles" 
       v-model="node.children" 
       group="nodes" 
       item-key="id"
@@ -29,6 +29,7 @@
 import DOMElementRenderer from './DOMElementRenderer.vue'
 import DraggableComponent from 'vuedraggable'
 import { ref } from 'vue'
+import { globalStates } from '@/global-states'
 
 const props = defineProps({
   node: {
@@ -38,16 +39,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  "passComponentId",
-  // "isDragged"
+  "passComponentId"
 ])
-
-const draggableComponentStyles = ref(
-  'w-full '+ 
-  'h-full '+
-  'min-w-[20px] '+
-  'min-h-[20px] '
-)
 
 const drag = ref(false)
 
@@ -58,44 +51,19 @@ function passComponentId(id: string) {
 
 function startDrag() {
   drag.value = true
-  // emit("isDragged", true)
-  // draggableComponentStyles.value = 
-  //   'w-full '+ 
-  //   'h-full '+
-  //   'min-w-[20px] '+
-  //   'min-h-[20px] '+
-  //   'border '+
-  //   'border-dashed'
+  globalStates.draggableComponentStyles = 
+    // 'w-full '+ 
+    // 'h-full '+
+    'min-w-[20px] '+
+    'min-h-[20px] '+
+    'border '+
+    'border-dashed '+
+    'border-black '+
+    'm-1 '
 }
 
 function endDrag() {
   drag.value = false
-  // emit("isDragged", false)
-  // draggableComponentStyles.value = 
-  //   'w-full '+ 
-  //   'h-full '+
-  //   'min-w-[20px] '+
-  //   'min-h-[20px] '
+  globalStates.draggableComponentStyles = ''
 }
-
-// function changeDraggableStyle(isDragged: boolean) {
-//   console.log(isDragged)
-//   if(isDragged) {
-//     draggableComponentStyles.value = 
-//       'w-full '+ 
-//       'h-full '+
-//       'min-w-[20px] '+
-//       'min-h-[20px] '+
-//       'border '+
-//       'border-dashed'
-//   } else {
-//     draggableComponentStyles.value = 
-//       'w-full '+ 
-//       'h-full '+
-//       'min-w-[20px] '+
-//       'min-h-[20px] '
-//   }
-  
-//   emit("isDragged", isDragged)
-// }
 </script>
