@@ -1,5 +1,5 @@
 <template>
-    <div class="w-[250px] p-2 bg-purple overflow-hidden flex flex-col">
+    <div class="min-w-fit p-2 bg-purple overflow-hidden flex flex-col">
         <slot></slot>
     </div>
 </template>

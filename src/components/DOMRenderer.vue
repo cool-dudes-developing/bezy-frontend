@@ -4,7 +4,15 @@
     @pass-component-id="passComponentId"
   >
     <DraggableComponent
-      :class="globalStates.draggableComponentStyles" 
+      :style="
+        node.attrs.style +
+        'border-style:none;'+
+        'display:flex;'+
+        'justify-items:stretch;'+
+        'height:100%;'+
+        'width:100%;'+
+        'padding:0;'+
+        globalStates.draggableComponentStyles"
       v-model="node.children" 
       group="nodes" 
       item-key="id"
@@ -35,7 +43,7 @@ const props = defineProps({
   node: {
     type: Object,
     required: true
-  }
+  },
 })
 
 const emit = defineEmits([
@@ -52,14 +60,10 @@ function passComponentId(id: string) {
 function startDrag() {
   drag.value = true
   globalStates.draggableComponentStyles = 
-    // 'w-full '+ 
-    // 'h-full '+
-    'min-w-[20px] '+
-    'min-h-[20px] '+
-    'border '+
-    'border-dashed '+
-    'border-black '+
-    'm-1 '
+    'border-width:1px;'+
+    'border-style:dashed;'+
+    'border-color:black;'+
+    'padding:10px;'
 }
 
 function endDrag() {
