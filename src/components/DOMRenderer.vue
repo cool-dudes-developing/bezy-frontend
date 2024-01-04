@@ -13,8 +13,7 @@
         'width:100%;'+
         'padding:0;'+
         globalStates.draggableComponentStyles"
-      v-model="node.children" 
-      group="nodes" 
+      v-model="node.children"
       item-key="id"
       @start="startDrag" 
       @end="endDrag"
@@ -59,11 +58,12 @@ function passComponentId(id: string) {
 
 function startDrag() {
   drag.value = true
-  globalStates.draggableComponentStyles = 
-    'border-width:1px;'+
-    'border-style:dashed;'+
-    'border-color:black;'+
-    'padding:10px;'
+  globalStates.draggableComponentStyles =
+    ''
+    // 'padding:10px;'
+    // 'border-width:1px;'+
+    // 'border-style:dashed;'+
+    // 'border-color:black;'
 }
 
 function endDrag() {

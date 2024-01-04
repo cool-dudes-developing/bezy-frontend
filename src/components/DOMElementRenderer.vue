@@ -2,7 +2,7 @@
   <component 
     :is="node.tag" 
     v-bind="node.attrs" 
-    @click.stop="getComponentId"
+    @dblclick.stop="getComponentId"
   >
     {{ node.innerContent }}
     <slot>

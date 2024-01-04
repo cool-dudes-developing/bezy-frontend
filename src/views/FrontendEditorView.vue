@@ -1,9 +1,11 @@
 <template>
   <div class="flex flex-row h-screen">
-    <DOMRenderer 
-      :node="dom" 
+    <div class="flex flex-col grow h-screen">
+      <DOMRenderer
+      :node="selectedComponent" 
       @pass-component-id="selectComponent"
-    />
+      />
+    </div>
     <FrontendElementEditor>
       <InputContainer>
         <Input
@@ -120,6 +122,10 @@
             {
               value: 'center',
               text: 'Center'
+            },
+            {
+              value: 'stretch',
+              text: 'Stretch'
             }
           ]"
           :model-value="selectedComponentStyle['align-items']"
@@ -165,7 +171,7 @@
       <InputContainer>
         <input
           type="text"
-          class="w-full bg-transparent focus:outline-none overflow-scroll hover:border hover:rounded"
+          class="w-full p-1 bg-transparent focus:outline-none overflow-scroll hover:border hover:rounded"
           v-model="selectedComponent.innerContent"
         />
       </InputContainer>
@@ -190,14 +196,36 @@
             @update:model-value="newValue => updateStyle(['padding-bottom', newValue])"/>
       </InputContainer> -->
       <div class="grow flex flex-col gap-3 justify-end">
+        <button 
+          @click="addComponent" 
+          class="bg-blue text-black w-full h-8 px-2 rounded"
+        >
+          Add component 
+        </button>
+        <!-- <button 
+          @click="makeComponent" 
+          class="bg-blue text-black w-full h-8 px-2 rounded"
+        >
+          Make component
+        </button>
+        <button 
+          @click="removeComponent" 
+          class="bg-blue text-black w-full h-8 px-2 rounded"
+        >
+          Remove component
+        </button> -->
         <div class="flex flex-row gap-3">
-          <button @click="addDiv" class="bg-blue text-black w-1/2 h-8 px-2 rounded">
-            <!-- <svg-icon name="plus-small-blue" class="h-4 w-4" /> -->
-            Add div 
+          <button 
+            @click="selectParent" 
+            class="bg-blue text-black w-full h-8 px-2 rounded"
+          >
+            To parent
           </button>
-          <button @click="showDOMLog" class="bg-blue text-black w-1/2 h-8 px-2 rounded">
-            <!-- <svg-icon name="clock" class="h-4 w-4" /> -->
-            DOM log
+          <button 
+            @click="selectedComponent = dom" 
+            class="bg-blue text-black w-full h-8 px-2 rounded"
+          >
+            To DOM
           </button>
         </div>
       </div>
@@ -207,7 +235,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import DOMRenderer from '@/components/DOMRenderer.vue'
 import FrontendElementEditor from '@/components/FrontendElementEditor.vue'
 import Input from '@/components/FrontendElementEditorInput.vue'
@@ -217,15 +245,31 @@ type BooleanValues = { [propKey: string]: boolean }
 
 const dom = ref({
   tag: 'div',
+  innerContent: '',
   attrs: {
     id: 'Dom',
     style: 
       'display:flex;'+
       'flex-direction:column;'+
+      'align-items:stretch;'+
+      'justify-content:start;'+
+      'gap:0px;'+
       'flex-grow:1;'+
-      'justify-items:stretch;'+
+      'width:auto;'+
+      'height:auto;'+
+      'cwidth:fill;'+
+      'cheight:fill;'+
+      'background-color:black;'+
+      'color:black;'+
       'border-style:solid;'+
-      'border-width:1px;'
+      'border-width:1px;'+
+      'border-radius:0px;'+
+      'padding-left:5px;'+
+      'padding-right:5px;'+
+      'padding-top:5px;'+
+      'padding-bottom:5px;'+
+      'padding-x:5px;'+
+      'padding-y:5px;'
     // class: 'border flex flex-col grow justify-items-stretch'
   },
   children: [
@@ -237,6 +281,8 @@ const dom = ref({
         style:
           'display:flex;'+
           'flex-direction:column;'+
+          'align-items:stretch;'+
+          'justify-content:start;'+
           'gap:0px;'+
           'flex-grow:1;'+
           'width:auto;'+
@@ -257,7 +303,7 @@ const dom = ref({
       },
       children: []
     }
-]
+  ]
 })
 
 const customStyle = [
@@ -274,11 +320,26 @@ const isDisabledInput = ref<BooleanValues>({
 
 const newDivId = ref(0)
 const isNewSelected = ref(false)
-const selectedComponent = ref(dom.value.children[0])
+const selectedComponent = ref(dom.value)
+// const previousSelectedComponent = ref(dom.value)
 const selectedComponentStyle = ref<Style>({})
 
+onMounted(getComponentStyle)
+
+function addComponent() {
+  addDiv()
+}
+
+function makeComponent() {
+
+}
+
+function removeComponent() {
+
+}
+
 function addDiv() {
-  dom.value.children.push({
+  selectedComponent.value.children.push({
     tag: 'div', 
     innerContent: 'New div ' + newDivId.value.toString(),
     attrs: {
@@ -311,24 +372,39 @@ function addDiv() {
 
 function selectComponent(id: string) {
   isNewSelected.value = false
-  dom.value.children.forEach((el) => {
-    if(isNewSelected.value) {
-        return
-    }
+  selectedComponent.value.children.forEach((el) => {
+    // if(isNewSelected.value) {
+    //   selectedComponent.value = el
+    //   isNewSelected.value = false
+    //   return
+    // } else {
     findComponent(id, el)
     console.log(selectedComponent.value)
+    // }
+    if(isNewSelected.value) {
+      // previousSelectedComponent.value = selectedComponent.value
+      selectedComponent.value = el
+      isNewSelected.value = false
+      return
+    }
   })
-  if(isNewSelected.value) {
-    getComponentStyle()
-    console.log('selectedComponent id: ' + selectedComponent.value.attrs.id)
-    return 
-  }
-  console.log('No component was found.')
+  // if(isNewSelected.value) {
+  getComponentStyle()
+  console.log('selectedComponent id: ' + selectedComponent.value.attrs.id)
+  // return 
+  // } else {
+  //   console.log('No component was found.')
+  // }
+}
+
+function selectParent() {
+  findParent(selectedComponent.value.attrs.id ,dom.value, dom.value)
+  getComponentStyle()
 }
 
 function findComponent(id: string, el: any) {
   if(el.attrs.id == id) {
-    selectedComponent.value = el
+    // selectedComponent.value = el
     isNewSelected.value = true
   }
   if(el.children.length > 0) {
@@ -337,6 +413,18 @@ function findComponent(id: string, el: any) {
     })
   }
   // console.log(el.attrs.id)
+}
+
+function findParent(id: string, el: any, parent: any) {
+  if(el.attrs.id == id) {
+    selectedComponent.value = parent
+    isNewSelected.value = true
+  }
+  if(el.children.length > 0) {
+    el.children.forEach((child: any) => {
+      findParent(id, child, el)
+    })
+  }
 }
 
 function getComponentStyle() {
@@ -424,6 +512,6 @@ function updateAllStyles() {
 }
 
 function showDOMLog(){
-  console.log(dom.value.children);
+  console.log(dom.value.children)
 }
 </script>
