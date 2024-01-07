@@ -207,13 +207,13 @@
           class="bg-blue text-black w-full h-8 px-2 rounded"
         >
           Make component
-        </button>
+        </button> -->
         <button 
           @click="removeComponent" 
           class="bg-blue text-black w-full h-8 px-2 rounded"
         >
           Remove component
-        </button> -->
+        </button>
         <div class="flex flex-row gap-3">
           <button 
             @click="selectParent" 
@@ -335,7 +335,14 @@ function makeComponent() {
 }
 
 function removeComponent() {
-
+  let removeComponentId = selectedComponent.value.attrs.id
+  selectParent()
+  getComponentStyle()
+  selectedComponent.value.children.forEach((el, index) => {
+    if(el.attrs.id == removeComponentId) {
+      selectedComponent.value.children.splice(index, 1)
+    }
+  })
 }
 
 function addDiv() {
@@ -385,13 +392,11 @@ function selectComponent(id: string) {
       // previousSelectedComponent.value = selectedComponent.value
       selectedComponent.value = el
       isNewSelected.value = false
-      return
     }
   })
   // if(isNewSelected.value) {
   getComponentStyle()
   console.log('selectedComponent id: ' + selectedComponent.value.attrs.id)
-  // return 
   // } else {
   //   console.log('No component was found.')
   // }
@@ -404,7 +409,7 @@ function selectParent() {
 
 function findComponent(id: string, el: any) {
   if(el.attrs.id == id) {
-    // selectedComponent.value = el
+    selectedComponent.value = el
     isNewSelected.value = true
   }
   if(el.children.length > 0) {
@@ -412,7 +417,6 @@ function findComponent(id: string, el: any) {
       findComponent(id, child)
     })
   }
-  // console.log(el.attrs.id)
 }
 
 function findParent(id: string, el: any, parent: any) {
