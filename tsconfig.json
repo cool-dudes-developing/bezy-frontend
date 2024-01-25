@@ -9,6 +9,7 @@
     "baseUrl": ".",
     "useDefineForClassFields": true,
     "experimentalDecorators": true,
+    "ignoreDeprecations": "5.0",
     "paths": {
       "@/*": [
         "src/*",
