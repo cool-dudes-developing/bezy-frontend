@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'recent',
         name: 'recent',
-        component: () => import(/* webpackChunkName: "recent" */ '../views/HubView.vue')
+        component: () => import(/* webpackChunkName: "recent" */ '../views/RecentView.vue')
       },
       {
         path: '404',

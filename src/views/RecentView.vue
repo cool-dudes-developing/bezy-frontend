@@ -2,13 +2,7 @@
   <div class="flex flex-col gap-2.5 px-5 py-7">
     <div class="flex flex-col gap-2.5">
       <header class="h-12 font-header text-3xl font-bold text-pink">Recent</header>
-      <div class="flex flex-wrap double-gap">
-        <CardComponent
-          v-if="projects.length == 0"
-          link="/platform/projects/create"
-          primaryText="Create new project"
-          iconName="plus"
-        />
+      <div class="flex flex-wrap gap-2">
         <CardComponent
           v-for="project in projects"
           :key="project.id"
@@ -16,6 +10,11 @@
           :primaryText="project.name"
           secondaryText="Open project"
           :iconName="'folder-big'"
+        />
+        <CardComponent
+          link="/platform/projects/create"
+          primaryText="Create project"
+          iconName="plus"
         />
       </div>
     </div>
