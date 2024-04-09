@@ -24,6 +24,7 @@
 import InputComponent from '@/components/InputComponent.vue'
 import Project from '@/models/Project'
 import { PageSpinnerKey } from '@/symbols'
+import { useRepo } from 'pinia-orm'
 import { inject, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -39,7 +40,8 @@ function create() {
     description: description.value
   })
     .then(() => {
-      router.push({ name: 'projects' })
+      const new_project_id = useRepo(Project).orderBy('created_at', 'desc').first()
+      router.push({ name: 'project', params: { 'project': new_project_id?.id } })
     })
     .finally(() => pageSpinner?.hide())
 }

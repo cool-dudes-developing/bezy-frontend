@@ -74,6 +74,7 @@ aside > * {
 .dropdown.active {
   max-height: max-content;
 }
+
 .router-link-active {
   @apply text-purplePizzaz;
 }

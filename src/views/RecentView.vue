@@ -11,9 +11,11 @@
           secondaryText="Open project"
           :iconName="'folder-big'"
         />
-        <CardComponent
+        <CardComponent 
+          v-if="projects.length < 5"
           link="/platform/projects/create"
           primaryText="Create project"
+          secondaryText="New project"
           iconName="plus"
         />
       </div>
@@ -30,6 +32,8 @@ import { inject, computed, onMounted } from 'vue'
 
 onMounted(() => {
   console.log(projects.value)
+  pageSpinner?.show()
+  Project.fetchAll().then(() => pageSpinner?.hide())
 })
 
 const spinner = inject(SpinnerKey)
@@ -38,7 +42,7 @@ const pageSpinner = inject(PageSpinnerKey)
 pageSpinner?.show()
 Project.fetchAll().then(() => pageSpinner?.hide())
 
-const projects = computed(() => useRepo(Project).all())
+const projects = computed(() => useRepo(Project).orderBy('updated_at', 'desc').limit(5).get())
 
 function appLoaderTest() {
   spinner?.show()

@@ -1,6 +1,6 @@
 <template>
-  <table class="w-full table-fixed border-separate border border-border">
-    <tr class="bg-background-300 border border-border rounded-t-lg">
+  <table class="bg-transparent w-full table-fixed border-collapse border border-blue">
+    <tr class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue rounded-t-lg">
       <slot name="headers"></slot>
     </tr>
     <slot name="main"></slot>

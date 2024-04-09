@@ -15,7 +15,7 @@
           <template #main>
             <template v-if="!pageSpinner?.visible.value">
               <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+                class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
                 v-for="method in project.methods"
                 :key="method.id"
                 @click="
@@ -31,7 +31,7 @@
                 <td>{{ method.blocks?.length ?? 0 }}</td>
               </tr>
               <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+                class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
                 @click="$router.push({ name: 'methodCreate' })"
               >
                 <td class="text-center text-blue font-bold" colspan="4">+</td>
@@ -52,7 +52,7 @@
           <template #main>
             <template v-if="!pageSpinner?.visible.value">
               <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+                class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
                 v-for="endpoint in project.endpoints"
                 :key="endpoint.id"
                 @click="
@@ -68,7 +68,7 @@
                 <td>?</td>
               </tr>
               <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+                class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
                 @click="$router.push({ name: 'endpointCreate' })"
               >
                 <td class="text-center text-blue font-bold" colspan="4">+</td>
@@ -97,6 +97,7 @@ const pageSpinner = inject(PageSpinnerKey)
 
 onMounted(() => {
   console.log(project.value?.name)
+  console.log(project.value?.user_id)
 })
 
 const project = computed(() =>
@@ -110,3 +111,14 @@ Project.fetch(route.value.params.project as string)
   .catch((err) => router.push({ name: '404' }))
   .finally(() => pageSpinner?.hide())
 </script>
+
+<style>
+th, td {
+  text-align: left;
+  padding: 10px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid #69e5f8;
+}
+</style>

@@ -13,7 +13,7 @@
         </template>
         <template #main>
           <tr
-            class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+            class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
             @click="$router.push({ name: 'project', params: { project: project.id } })"
             v-for="project in projects"
             :key="project.id"
@@ -22,9 +22,9 @@
             <td colspan="2" ref="cells">
               {{ project.description }}
             </td>
-            <td ref="cells">{{ project.updated_at }}</td>
+            <td ref="cells">{{ project.updated_at.substring(0, 19).replace('T', ' ') }}</td>
             <td 
-              class="flex py-3.5 justify-center"
+              class="flex py-3.5 justify-center border-none"
               @click.stop="destroy(project.id)"
               ref="cells"
             >
@@ -32,7 +32,7 @@
             </td>
           </tr>
           <tr
-            class="bg-background-400 border border-border rounded-b-lg hover:bg-background-500 cursor-pointer"
+            class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
             @click="$router.push({ name: 'createProject' })"
           >
             <td class="text-center text-blue font-bold" colspan="5">+</td>
@@ -89,12 +89,12 @@ onMounted(() => {
 </script>
 
 <style>
-th,
-td {
+th, td {
   text-align: left;
   padding: 10px 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  border: 1px solid #69e5f8;
 }
 </style>
