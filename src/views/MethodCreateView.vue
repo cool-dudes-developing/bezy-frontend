@@ -34,10 +34,8 @@ const description = ref('')
 const pageSpinner = inject(PageSpinnerKey)
 
 function create() {
-  console.log(route)
   pageSpinner?.show()
   Method.store(route.params.project as string, {
-    name: name.value,
     title: name.value,
     description: description.value
   })
