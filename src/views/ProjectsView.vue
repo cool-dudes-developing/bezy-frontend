@@ -5,19 +5,17 @@
         Projects
       </header>
       <TableComponent v-if="projects.length != 0">
-        <template #headers>
+        <TableHeaderRow>
           <th>Name</th>
           <th colspan="2">Description</th>
           <th>Updated</th>
           <th class="w-10 border-none"></th>
-        </template>
-        <template #main>
-          <tr
-            class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
+        </TableHeaderRow>
+        <TableRow
             @click="$router.push({ name: 'project', params: { project: project.id } })"
             v-for="project in projects"
             :key="project.id"
-          >
+        >
             <td ref="cells">{{ project.name }}</td>
             <td colspan="2" ref="cells">
               {{ project.description }}
@@ -30,14 +28,13 @@
             >
               <svg-icon name="trashcan"/>
             </td>
-          </tr>
+          </TableRow>
           <tr
             class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
             @click="$router.push({ name: 'createProject' })"
           >
             <td class="text-center text-blue font-bold" colspan="5">+</td>
           </tr>
-        </template>
       </TableComponent>
       <div v-else class="flex flex-col w-fit gap-2">
         <p>It seems like you have no projects!</p>
@@ -53,15 +50,20 @@
 </template>
 
 <script lang="ts" setup>
-import { useRepo } from 'pinia-orm'
-import { computed, inject, onMounted, ref, nextTick } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import Project from '@/models/Project'
-import { PageSpinnerKey } from '@/symbols'
-import TableComponent from '@/components/TableComponent.vue'
 
-const pageSpinner = inject(PageSpinnerKey)
+import { useRepo } from 'pinia-orm'
+import Project from '@/models/Project'
+
+import { PageSpinnerKey } from '@/symbols'
+
+import TableComponent from '@/components/TableComponent.vue'
+import TableHeaderRow from '@/components/TableHeaderRow.vue'
+import TableRow from '@/components/TableRow.vue'
+
 const route = computed(() => useRoute())
+const pageSpinner = inject(PageSpinnerKey)
 
 const EmptyStateClass = ref('flex flex-col justify-center items-center gap-2.5 py-5 px-2.5')
 const NormalStateClass = ref('flex flex-col gap-2.5 py-5 px-2.5')

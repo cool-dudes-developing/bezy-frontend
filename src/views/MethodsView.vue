@@ -8,25 +8,22 @@
         Methods
       </header>
       <TableComponent v-if="(methods as Method[]).length != 0">
-        <template #headers>
+        <TableHeaderRow>
           <th>Name</th>
           <th>Updated</th>
           <th>Fields</th>
           <th>Blocks</th>
-        </template>
-        <template #main>
-          <tr
-            class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
-            @click="$router.push({ name: 'method', params: { method: method.id } })"
-            v-for="method in methods"
-            :key="method.id"
-          >
-            <td>{{ method.name }}</td>
-            <td>20/03/2023, 04:20:13</td>
-            <td>In: 0; Out: 1</td>
-            <td></td>
-          </tr>
-        </template>
+        </TableHeaderRow>
+        <TableRow
+          @click="$router.push({ name: 'method', params: { method: method.id } })"
+          v-for="method in methods"
+          :key="method.id"
+        >
+          <td>{{ method.name }}</td>
+          <td>20/03/2023, 04:20:13</td>
+          <td>In: 0; Out: 1</td>
+          <td></td>
+        </TableRow>
       </TableComponent>
       <div v-else class="flex flex-col w-fit gap-2">
         <p>It seems like you have no methods!</p>
@@ -41,13 +38,18 @@
 </template>
 
 <script lang="ts" setup>
-import { useRepo } from 'pinia-orm'
 import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
+
+import { useRepo } from 'pinia-orm'
 import Project from '@/models/Project'
-import { PageSpinnerKey } from '@/symbols'
-import TableComponent from '@/components/TableComponent.vue'
 import Method from '@/models/Method'
+
+import { PageSpinnerKey } from '@/symbols'
+
+import TableComponent from '@/components/TableComponent.vue'
+import TableHeaderRow from '@/components/TableHeaderRow.vue'
+import TableRow from '@/components/TableRow.vue'
 
 const route = computed(() => useRoute())
 
