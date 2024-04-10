@@ -9,10 +9,10 @@
           :link="'/platform/projects/' + project.id"
           :primaryText="project.name"
           secondaryText="Open project"
-          :iconName="'folder-big'"
+          iconName='folder-big'
         />
         <CardComponent 
-          v-if="projects.length < 5"
+          v-if="projects.length < 10"
           link="/platform/projects/create"
           primaryText="Create project"
           secondaryText="New project"
@@ -42,7 +42,7 @@ const pageSpinner = inject(PageSpinnerKey)
 pageSpinner?.show()
 Project.fetchAll().then(() => pageSpinner?.hide())
 
-const projects = computed(() => useRepo(Project).orderBy('updated_at', 'desc').limit(5).get())
+const projects = computed(() => useRepo(Project).orderBy('updated_at', 'desc').limit(10).get())
 
 function appLoaderTest() {
   spinner?.show()
