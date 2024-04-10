@@ -28,12 +28,11 @@
               <td>In: 0; Out: 1</td>
               <td>{{ method.blocks?.length ?? 0 }}</td>
             </TableRow>
-            <tr
-              class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
+            <TableRow
               @click="$router.push({ name: 'methodCreate' })"
             >
               <td class="text-center text-blue font-bold" colspan="4">+</td>
-            </tr>
+          </TableRow>
         <!-- </template> -->
         </TableComponent>
       </div>
@@ -62,12 +61,11 @@
                 <td>API</td>
                 <td>?</td>
               </TableRow>
-              <tr
-                class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
+              <TableRow
                 @click="$router.push({ name: 'endpointCreate' })"
               >
                 <td class="text-center text-blue font-bold" colspan="4">+</td>
-              </tr>
+              </TableRow>
             <!-- </template> -->
         </TableComponent>
       </div>

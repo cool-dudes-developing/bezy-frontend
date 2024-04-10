@@ -29,12 +29,11 @@
               <svg-icon name="trashcan"/>
             </td>
           </TableRow>
-          <tr
-            class="bg-transparent backdrop-brightness-75 drop-shadow-sm border border-blue hover:backdrop-brightness-50 cursor-pointer"
+          <TableRow
             @click="$router.push({ name: 'createProject' })"
           >
             <td class="text-center text-blue font-bold" colspan="5">+</td>
-          </tr>
+          </TableRow>
       </TableComponent>
       <div v-else class="flex flex-col w-fit gap-2">
         <p>It seems like you have no projects!</p>
