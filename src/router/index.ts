@@ -80,8 +80,12 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: 'backend',
             name: 'projectBackend',
-            component: () =>
-              import(/* webpackChunkName: "projectBackend" */ '../views/ProjectBackendView.vue')
+            component: () => import(/* webpackChunkName: "projectBackend" */ '../views/ProjectBackendView.vue')
+          },
+          {
+            path: 'storage',
+            name: 'projectStorage',
+            component: () => import(/* webpackChunkName: "projectStorage" */ '../views/ProjectStorageView.vue')
           },
           {
             path: 'methods',

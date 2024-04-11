@@ -32,7 +32,7 @@
           <TableRow
             @click="$router.push({ name: 'createProject' })"
           >
-            <td class="text-center text-blue font-bold" colspan="5">+</td>
+            <td class="text-center text-blue font-bold" colspan="5">Create new project</td>
           </TableRow>
       </TableComponent>
       <div v-else class="flex flex-col w-fit gap-2">

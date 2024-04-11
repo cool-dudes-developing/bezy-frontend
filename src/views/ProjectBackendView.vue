@@ -31,7 +31,7 @@
             <TableRow
               @click="$router.push({ name: 'methodCreate' })"
             >
-              <td class="text-center text-blue font-bold" colspan="4">+</td>
+              <td class="text-center text-blue font-bold" colspan="4">Create new method</td>
           </TableRow>
         <!-- </template> -->
         </TableComponent>
@@ -64,7 +64,7 @@
               <TableRow
                 @click="$router.push({ name: 'endpointCreate' })"
               >
-                <td class="text-center text-blue font-bold" colspan="4">+</td>
+                <td class="text-center text-blue font-bold" colspan="4">Create new endpoint</td>
               </TableRow>
             <!-- </template> -->
         </TableComponent>
