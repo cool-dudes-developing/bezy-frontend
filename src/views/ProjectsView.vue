@@ -22,7 +22,6 @@
             </td>
             <td ref="cells">{{ project.updated_at.substring(0, 19).replace('T', ' ') }}</td>
             <td 
-              class="flex py-3.5 justify-center border-none"
               @click.stop="destroy(project.id)"
               ref="cells"
             >
