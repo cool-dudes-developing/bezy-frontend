@@ -5,8 +5,8 @@
   >
     <svg-icon :name="iconName"></svg-icon>
     <div class="flex flex-col items-start truncate">
-      <p class="font-paragraph text-base text-white w-full text-right truncate">{{ secondaryText }}</p>
-      <p class="font-paragraph text-2xl text-white w-full text-right truncate">{{ primaryText }}</p>
+      <p class="font-paragraph text-base text-white w-full truncate">{{ secondaryText }}</p>
+      <p class="font-paragraph text-2xl text-white w-full truncate">{{ primaryText }}</p>
     </div>
   </router-link>
 </template>
