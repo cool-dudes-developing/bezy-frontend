@@ -228,6 +228,20 @@
             To DOM
           </button>
         </div>
+        <div class="flex flex-row gap-3">
+          <button
+            @click="showRendered"
+            class="bg-blue text-black w-full h-8 px-2 rounded"
+          >
+            Show rendered
+          </button>
+          <!-- <button
+            @click="saveDomJson"
+            class="bg-blue text-black w-full h-8 px-2 rounded"
+          >
+            Save JSON
+          </button> -->
+        </div>
       </div>
     </FrontendElementEditor>
     <!-- <textarea v-model="selectedComponent.attrs.style" class="grow text-black resize-none outline-none"></textarea> -->
@@ -240,71 +254,13 @@ import DOMRenderer from '@/components/DOMRenderer.vue'
 import FrontendElementEditor from '@/components/FrontendElementEditor.vue'
 import Input from '@/components/FrontendElementEditorInput.vue'
 import InputContainer from '@/components/FrontendElementEditorInputContainer.vue'
+import router from '@/router'
+import domJson from '@/domJson' 
+import { globalStates } from '@/global-states'
 type Style = { [propKey: string]: string }
 type BooleanValues = { [propKey: string]: boolean }
 
-const dom = ref({
-  tag: 'div',
-  innerContent: '',
-  attrs: {
-    id: 'Dom',
-    style: 
-      'display:flex;'+
-      'flex-direction:column;'+
-      'align-items:stretch;'+
-      'justify-content:start;'+
-      'gap:0px;'+
-      'flex-grow:1;'+
-      'width:auto;'+
-      'height:auto;'+
-      'cwidth:fill;'+
-      'cheight:fill;'+
-      'background-color:black;'+
-      'color:black;'+
-      'border-style:solid;'+
-      'border-width:1px;'+
-      'border-radius:0px;'+
-      'padding-left:5px;'+
-      'padding-right:5px;'+
-      'padding-top:5px;'+
-      'padding-bottom:5px;'+
-      'padding-x:5px;'+
-      'padding-y:5px;'
-    // class: 'border flex flex-col grow justify-items-stretch'
-  },
-  children: [
-    {
-      tag: 'div',
-      innerContent: 'Test div',
-      attrs: {
-        id: 'testDiv',
-        style:
-          'display:flex;'+
-          'flex-direction:column;'+
-          'align-items:stretch;'+
-          'justify-content:start;'+
-          'gap:0px;'+
-          'flex-grow:1;'+
-          'width:auto;'+
-          'height:auto;'+
-          'cwidth:fill;'+
-          'cheight:fill;'+
-          'background-color:#69e5f8;'+
-          'color:black;'+
-          'border-style:solid;'+
-          'border-width:1px;'+
-          'border-radius:0px;'+
-          'padding-left:5px;'+
-          'padding-right:5px;'+
-          'padding-top:5px;'+
-          'padding-bottom:5px;'+
-          'padding-x:5px;'+
-          'padding-y:5px;'
-      },
-      children: []
-    }
-  ]
-})
+const dom = ref(domJson)
 
 const customStyle = [
   'padding-x',
@@ -324,7 +280,10 @@ const selectedComponent = ref(dom.value)
 // const previousSelectedComponent = ref(dom.value)
 const selectedComponentStyle = ref<Style>({})
 
-onMounted(getComponentStyle)
+onMounted(() => {
+  getComponentStyle()
+  globalStates.isDraggable = true
+})
 
 function addComponent() {
   addDiv()
@@ -332,6 +291,14 @@ function addComponent() {
 
 function makeComponent() {
 
+}
+
+function showRendered() {
+  router.push({name: 'renderedfrontend'})
+}
+
+function saveDomJson() {
+  console.log(domJson)
 }
 
 function removeComponent() {

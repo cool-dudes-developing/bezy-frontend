@@ -165,9 +165,21 @@ const routes: Array<RouteRecordRaw> = [
     redirect: { name: '404' }
   },
   {
-    path: '/frontendbuilder',
-    name: 'frontendBuilder',
-    component: () => import(/* webpackChunkName: "frontendBuilder" */ '../views/FrontendEditorView.vue')
+    path: '/debug',
+    name: 'debug',
+    redirect: { name: 'frontendbuilder'},
+    children: [
+      {
+        path: 'frontendbuilder',
+        name: 'frontendbuilder',
+        component: () => import(/* webpackChunkName: "frontendBuilder" */ '../views/FrontendEditorView.vue')
+      },
+      {
+        path: 'renderedfrontend',
+        name: 'renderedfrontend',
+        component: () => import(/* webpackChunkName: "renderedfrontend" */ '../views/RenderedFrontendView.vue'),
+      }
+    ]
   }
 ]
 

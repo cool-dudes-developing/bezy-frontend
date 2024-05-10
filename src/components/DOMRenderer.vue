@@ -17,6 +17,7 @@
       item-key="id"
       @start="startDrag" 
       @end="endDrag"
+      :disabled="!globalStates.isDraggable"
       >
       <template #item="{element}">
         <DOMRenderer 
@@ -42,7 +43,7 @@ const props = defineProps({
   node: {
     type: Object,
     required: true
-  },
+  }
 })
 
 const emit = defineEmits([
