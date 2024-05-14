@@ -1,8 +1,5 @@
 <template>
-  <table class="w-full table-fixed border-separate border border-border rounded-lg">
-    <tr class="bg-background-300 border border-border">
-      <slot name="headers"></slot>
-    </tr>
-    <slot name="main"></slot>
+  <table class="bg-transparent w-full table-fixed border-collapse border border-blue">
+    <slot></slot>
   </table>
 </template>

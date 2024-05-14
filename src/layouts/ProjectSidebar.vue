@@ -12,7 +12,7 @@
       <svg-icon name="image" class="h-4 w-4" />
       Frontend
     </router-link>
-    <router-link :to="{ name: '404' }" :is="'div'">
+    <router-link :to="{ name: 'projectStorage' }" :is="'div'">
       <svg-icon name="folder" class="h-4 w-4" />
       Storage
     </router-link>
@@ -74,6 +74,7 @@ aside > * {
 .dropdown.active {
   max-height: max-content;
 }
+
 .router-link-active {
   @apply text-purplePizzaz;
 }

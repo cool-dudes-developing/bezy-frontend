@@ -31,7 +31,6 @@ export default class Method extends Model {
 
   static store(project_id: string, data: any) {
     return api.post('/projects/' + project_id + '/methods/', data).then((response) => {
-      console.log(response)
       useRepo(Method).save(response.data.data)
     })
   }

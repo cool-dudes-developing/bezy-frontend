@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import User from '@/models/User'
 import EditorSidebar from '@/layouts/EditorSidebar.vue'
 import ProjectSidebar from '@/layouts/ProjectSidebar.vue'
@@ -9,7 +8,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    redirect: { name: 'platform'}
   },
   {
     path: '/about',
@@ -32,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'recent',
         name: 'recent',
-        component: () => import(/* webpackChunkName: "recent" */ '../views/HubView.vue')
+        component: () => import(/* webpackChunkName: "recent" */ '../views/RecentView.vue')
       },
       {
         path: '404',
@@ -99,8 +98,12 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: 'backend',
             name: 'projectBackend',
-            component: () =>
-              import(/* webpackChunkName: "projectBackend" */ '../views/ProjectBackendView.vue')
+            component: () => import(/* webpackChunkName: "projectBackend" */ '../views/ProjectBackendView.vue')
+          },
+          {
+            path: 'storage',
+            name: 'projectStorage',
+            component: () => import(/* webpackChunkName: "projectStorage" */ '../views/ProjectStorageView.vue')
           },
           {
             path: 'tables',
@@ -190,9 +193,21 @@ const routes: Array<RouteRecordRaw> = [
     redirect: { name: '404' }
   },
   {
-    path: '/frontendbuilder',
-    name: 'frontendBuilder',
-    component: () => import(/* webpackChunkName: "frontendBuilder" */ '../views/FrontendEditorView.vue')
+    path: '/debug',
+    name: 'debug',
+    redirect: { name: 'frontendbuilder'},
+    children: [
+      {
+        path: 'frontendbuilder',
+        name: 'frontendbuilder',
+        component: () => import(/* webpackChunkName: "frontendBuilder" */ '../views/FrontendEditorView.vue')
+      },
+      {
+        path: 'renderedfrontend',
+        name: 'renderedfrontend',
+        component: () => import(/* webpackChunkName: "renderedfrontend" */ '../views/RenderedFrontendView.vue'),
+      }
+    ]
   }
 ]
 

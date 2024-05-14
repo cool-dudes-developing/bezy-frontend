@@ -11,7 +11,6 @@ import { computed, inject } from 'vue'
 import Project from '@/models/Project'
 import { useRoute, useRouter } from 'vue-router'
 import { PageSpinnerKey } from '@/symbols'
-import TableComponent from '@/components/TableComponent.vue'
 
 const route = computed(() => useRoute())
 const router = useRouter()

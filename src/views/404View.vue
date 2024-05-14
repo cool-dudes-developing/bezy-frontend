@@ -1,9 +1,11 @@
 <template>
-  <div class="flex flex-col items-center justify-center">
-    <h1>404</h1>
-    <p>Page not found</p>
-    <button @click="$router.push({ name: 'platform' })" class="button py-3 px-5">
-        Go to Platform
-    </button>
+  <div class="flex flex-col items-center justify-center gap-2">
+    <!-- <h1>404</h1> -->
+    <div class="flex flex-col gap-2">
+      <p>Page is not found :(</p>
+      <button @click="$router.back()" class="button py-1">
+          Go back
+      </button>
+    </div>
   </div>
 </template>

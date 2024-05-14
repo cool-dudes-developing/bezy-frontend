@@ -6,53 +6,47 @@
       <div>
         <header class="h-10 font-header text-2xl font-bold text-pink">Methods</header>
         <TableComponent>
-          <template #headers>
+          <TableHeaderRow>
             <th>Name</th>
             <th>Updated</th>
             <th>Fields</th>
             <th>Blocks</th>
-          </template>
-          <template #main>
-            <template v-if="!pageSpinner?.visible.value">
-              <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
-                v-for="method in project.methods"
-                :key="method.id"
-                @click="
-                  $router.push({
-                    name: 'method',
-                    params: { method: method.id }
-                  })
-                "
-              >
-                <td>{{ method.name }}</td>
-                <td>20/03/2023</td>
-                <td>In: 0; Out: 1</td>
-                <td>{{ method.blocks?.length ?? 0 }}</td>
-              </tr>
-              <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
-                @click="$router.push({ name: 'methodCreate' })"
-              >
-                <td class="text-center text-blue font-bold" colspan="4">+</td>
-              </tr>
-            </template>
-          </template>
+          </TableHeaderRow>
+          <!-- <template v-if="!pageSpinner?.visible.value"> -->
+            <TableRow
+              v-for="method in project.methods"
+              :key="method.id"
+              @click="
+                $router.push({
+                  name: 'method',
+                  params: { method: method.id }
+                })
+              "
+            >
+              <td>{{ method.name }}</td>
+              <td>20/03/2023</td>
+              <td>In: 0; Out: 1</td>
+              <td>{{ method.blocks?.length ?? 0 }}</td>
+            </TableRow>
+            <TableRow
+              @click="$router.push({ name: 'methodCreate' })"
+            >
+              <td class="text-center text-blue font-bold" colspan="4">Create new method</td>
+          </TableRow>
+        <!-- </template> -->
         </TableComponent>
       </div>
       <div>
         <header class="h-10 font-header text-2xl font-bold text-pink">Endpoints</header>
         <TableComponent>
-          <template #headers>
+          <TableHeaderRow>
             <th>Endpoint</th>
             <th>Logic method</th>
             <th>Type</th>
             <th>Middlewares</th>
-          </template>
-          <template #main>
-            <template v-if="!pageSpinner?.visible.value">
-              <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+          </TableHeaderRow>
+            <!-- <template v-if="!pageSpinner?.visible.value"> -->
+              <TableRow
                 v-for="endpoint in project.endpoints"
                 :key="endpoint.id"
                 @click="
@@ -66,15 +60,13 @@
                 <td>{{ endpoint.method }}</td>
                 <td>API</td>
                 <td>?</td>
-              </tr>
-              <tr
-                class="bg-background-400 border border-border hover:bg-background-500 cursor-pointer"
+              </TableRow>
+              <TableRow
                 @click="$router.push({ name: 'endpointCreate' })"
               >
-                <td class="text-center text-blue font-bold" colspan="4">+</td>
-              </tr>
-            </template>
-          </template>
+                <td class="text-center text-blue font-bold" colspan="4">Create new endpoint</td>
+              </TableRow>
+            <!-- </template> -->
         </TableComponent>
       </div>
     </div>
@@ -84,12 +76,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useRepo } from 'pinia-orm'
 import { computed, inject, onMounted } from 'vue'
-import Project from '@/models/Project'
 import { useRoute, useRouter } from 'vue-router'
+
+import { useRepo } from 'pinia-orm'
+import Project from '@/models/Project'
+
 import { PageSpinnerKey } from '@/symbols'
 import TableComponent from '@/components/TableComponent.vue'
+import TableHeaderRow from '@/components/TableHeaderRow.vue'
+import TableRow from '@/components/TableRow.vue'
 
 const route = computed(() => useRoute())
 const router = useRouter()
@@ -97,6 +93,7 @@ const pageSpinner = inject(PageSpinnerKey)
 
 onMounted(() => {
   console.log(project.value?.name)
+  console.log(project.value?.user_id)
 })
 
 const project = computed(() =>
@@ -106,7 +103,19 @@ const project = computed(() =>
 )
 
 pageSpinner?.show()
+
 Project.fetch(route.value.params.project as string)
-  .catch((err) => router.push({ name: '404' }))
+  .catch(() => router.push({ name: '404' }))
   .finally(() => pageSpinner?.hide())
 </script>
+
+<style>
+th, td {
+  text-align: left;
+  padding: 10px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid #69e5f8;
+}
+</style>
