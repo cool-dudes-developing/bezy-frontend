@@ -1,6 +1,6 @@
 <template>
   <aside class="flex flex-col gap-[15px] px-[20px] py-[30px] bg-[#1f1e1e]">
-    <router-link :to="{ name: '404' }" :is="'div'">
+    <router-link :to="{ name: 'tables' }" :is="'div'">
       <svg-icon name="database" class="h-4 w-4" />
       Database
     </router-link>

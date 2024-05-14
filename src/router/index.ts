@@ -59,6 +59,24 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'marketplace',
+        name: 'marketplace',
+        redirect: { name: 'marketplaceAssets' },
+        children: [
+          {
+            path: 'assets',
+            name: 'marketplaceAssets',
+            component: () =>
+              import(/* webpackChunkName: "marketplaceAssets" */ '../views/marketplace/AssetsListView.vue')
+          },
+          {
+            path: 'assets/:id',
+            name: 'asset',
+            component: () => import(/* webpackChunkName: "asset" */ '../views/marketplace/AssetView.vue')
+          }
+        ]
+      },
+      {
         path: 'projects',
         name: 'projects',
         component: () => import(/* webpackChunkName: "projects" */ '../views/ProjectsView.vue')
@@ -83,6 +101,16 @@ const routes: Array<RouteRecordRaw> = [
             name: 'projectBackend',
             component: () =>
               import(/* webpackChunkName: "projectBackend" */ '../views/ProjectBackendView.vue')
+          },
+          {
+            path: 'tables',
+            name: 'tables',
+            component: () => import(/* webpackChunkName: "tables" */ '../views/project/DatabaseTableListView.vue')
+          },
+          {
+            path: 'tables/:table',
+            name: 'table',
+            component: () => import(/* webpackChunkName: "table" */ '../views/project/DatabaseTableView.vue')
           },
           {
             path: 'methods',

@@ -3,6 +3,7 @@ import { Attr, HasMany, Str, Uid } from 'pinia-orm/dist/decorators'
 import Block from './Block'
 import * as api from '@/utils/api'
 import Connection from './Connection'
+import Port from '@/models/Port'
 
 export default class Method extends Model {
   static entity = 'methods'
@@ -51,5 +52,33 @@ export default class Method extends Model {
       .then((response) => {
         return useRepo(Block).save(response.data.data) as unknown as Block
       })
+  }
+
+  static addPort(method_id: string, name: string, type: string, direction: boolean) {
+    return api.post('/methods/' + method_id + '/ports', { name, type, direction }).then((response) => {
+      useRepo(Port).save({
+        ...response.data.data,
+        block_id: method_id,
+        direction: direction ? 'out' : 'in'
+      })
+      const blockRepo = useRepo(Block)
+      const block = blockRepo.find(method_id)
+
+      if (!block) throw new Error('Block is not found in cache')
+
+      const outPortIds = block.outPortIds
+      const inPortIds = block.inPortIds
+
+      if (direction)
+        outPortIds.push(response.data.data.id)
+      else
+        inPortIds.push(response.data.data.id)
+
+      blockRepo.save({
+        outPortIds,
+        inPortIds,
+        id: method_id
+      })
+    })
   }
 }

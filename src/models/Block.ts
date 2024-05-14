@@ -6,12 +6,14 @@ import Connection from './Connection'
 import * as api from '@/utils/api'
 import { dia } from 'jointjs'
 import { Shape } from './Shapes'
+import MarketplaceAsset from '@/models/MarketplaceAsset'
 
 export default class Block extends Model {
   static entity = 'blocks'
 
   @Uid() declare id: string
   @Attr(null) declare method_id?: string
+  @Attr(null) declare block_id?: string
   @Str('') declare name: string
   @Str('') declare description: string
   @Num(0) declare x: number
@@ -24,7 +26,8 @@ export default class Block extends Model {
 
   static fetchAllTemplates() {
     return api.get('/blocks/templates').then((response) => {
-      useRepo(Block).save(response.data.data)
+      useRepo(Block).save(response.data.data.blocks)
+      useRepo(MarketplaceAsset).save(response.data.data.assets)
     })
   }
 

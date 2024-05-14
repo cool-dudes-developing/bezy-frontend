@@ -6,22 +6,161 @@
     @mousemove="handleMouseMove"
     @wheel.prevent="handleWheelMove"
   ></div>
+  <div v-if="inspectBlock" class="absolute inset-0 flex items-center justify-center p-10"
+       @click.self="inspectBlock = null">
+    <div
+      class="grow max-w-lg overflow-y-auto overflow-x-hidden max-h-[500px] h-full bg-background-800 flex flex-col gap-3 p-3 rounded-lg border">
+      <div class="flex justify-between">
+        <h1 class="text-xl">{{ inspectBlock.name }}</h1>
+        <button v-if="templateAssets.find(a=>a.block.id === inspectBlock?.block_id)"
+                class="bg-accent text-black font-bold px-3 rounded" @click="() => {
+        const asset = templateAssets.find(a=>a.block.id === inspectBlock?.block_id)
+        if (!asset) return
+        router.push({
+          name: 'method',
+          params: {
+            project: route.params.project as string,
+            method: asset.block.id as string
+          }
+        })
+      }">
+          Inspect
+        </button>
+      </div>
+      <p>
+        {{ inspectBlock.description }}
+      </p>
+
+      <div v-if="inspectBlock?.inPorts.length" class="divide-y divide-accent">
+        <small>Input</small>
+        <div v-for="port in inspectBlock?.inPorts" :key="port.id">
+          <div class="flex flex-row justify-between">
+            <h2>{{ port.name }}</h2>
+            <h2>{{ port.type }}</h2>
+          </div>
+        </div>
+        <div v-if="inspectBlock?.name === 'end'">
+          Add method output
+          <div class="flex flex-row justify-between">
+            <input v-model="newOutputName" class="bg-background" placeholder="name" type="text">
+            <select v-model="newOutputType" class="bg-background">
+              <option v-for="type in ['string', 'number', 'boolean', 'object', 'array']"
+                      :key="type" :value="type">{{ type }}
+              </option>
+            </select>
+            <button class="bg-background px-2" @click="addOutput">add</button>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="inspectBlock?.outPorts.length" class="divide-y divide-accent">
+        <small>Output</small>
+        <div v-for="port in inspectBlock?.outPorts" :key="port.id">
+          <div class="flex flex-row justify-between">
+            <h2>{{ port.name }}</h2>
+            <h2>{{ port.type }}</h2>
+          </div>
+        </div>
+        <div v-if="inspectBlock?.name === 'start'">
+          Add method input
+          <div class="flex flex-row justify-between">
+            <input v-model="newInputName" class="bg-background" placeholder="name" type="text">
+            <select v-model="newInputType" class="bg-background">
+              <option v-for="type in ['string', 'number', 'boolean', 'object', 'array']"
+                      :key="type" :value="type">{{ type }}
+              </option>
+            </select>
+            <button class="bg-background px-2" @click="addInput">add</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div v-if="runner" class="absolute inset-0 flex items-center justify-center p-10"
+       @click.self="runner = null">
+    <div
+      class="grow max-w-lg overflow-y-auto overflow-x-hidden max-h-[500px] h-full bg-background-800 flex flex-col rounded-lg border">
+      <div class="flex flex-col sticky top-0 bg-background-800">
+        <input :value="`/api/projects/${route.params.project}/methods/${route.params.method}/execute`"
+               class="bg-background p-1 rounded" disabled
+               type="text">
+        <div class="grid grid-cols-2 border-b">
+          <button
+            :class="{
+            'bg-background': runner === 'request'
+          }"
+            class="p-3"
+            @click="runner = 'request'"
+          >
+            Request
+          </button>
+          <button
+            :class="{
+            'bg-background': runner === 'response'
+          }"
+            class="p-3"
+            @click="runner= 'response'"
+          >
+            Response
+          </button>
+        </div>
+      </div>
+      <div class="grow p-3 flex gap-3 flex-col">
+        <template v-if="runner==='request'">
+          <div class="flex flex-col gap-3">
+            <h3 class="text-lg">Params</h3>
+            <div v-for="param in method?.blocks.find(b=>b.name === 'start').outPorts.filter(p=>p.type !== 'flow')"
+                 class="grid grid-cols-2">
+              <h4>
+                {{ param.name }}
+                <span class="bg-accent text-black rounded-full px-1 text-xs font-bold">
+                {{ param.type }}
+                </span>
+              </h4>
+              <input v-if="['string','number'].includes(param.type)" v-model="runnerParams[param.name]"
+                     :placeholder="param.type"
+                     :type="param.type === 'string' ? 'text' : 'number'" class="bg-background" />
+              <textarea v-else-if="['object','array'].includes(param.type)" v-model="runnerParams[param.name]"
+                        :placeholder="'JSON '+param.type" class="bg-background" />
+              <input v-else-if="param.type==='boolean'" v-model="runnerParams[param.name]" class="bg-background"
+                     type="checkbox">
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="text-sm">
+            Status: {{ runnerResponse?.status }} {{ runnerResponse?.statusText }}
+          </div>
+          <h3 class="text-lg">Response data:</h3>
+          <pre class="bg-background">{{ runnerResponse?.data }}</pre>
+        </template>
+
+      </div>
+      <button :disabled="runnerLoading" class="bg-accent disabled:bg-accent-500 active:bg-accent-400 text-black sticky bottom-0 py-2 font-bold" @click="sendRunner">
+        Send
+      </button>
+    </div>
+  </div>
   <div class="absolute top-0 flex gap-3">
     <button class="bg-green-600" @click="logbus">log bus</button>
     <button class="bg-green-600" @click="undo">undo</button>
     <button class="bg-green-600" @click="redo">redo</button>
     <button class="bg-green-600" @click="save">save</button>
+    <button class="bg-green-600" @click="publish">publish</button>
+    <button class="bg-green-600" @click="runner = 'request'">execute</button>
     <div
       v-if="blocksModalOpen"
-      class="absolute w-64 bg-black bg-opacity-50"
       :style="{ top: blocksModalPosition.y + 'px', left: blocksModalPosition.x + 'px' }"
+      class="absolute w-64 bg-black bg-opacity-50"
     >
       <div class="flex flex-row justify-between">
         <h1>Add block</h1>
         <button @click="blocksModalOpen = false">close</button>
       </div>
       <div class="flex flex-col overflow-auto">
-        <div v-for="block in templateBlocks">
+        <input v-model="blocksSearch" class="bg-transparent" type="text">
+        <div v-for="block in blocksSearchResults" :key="block.id">
           <div class="flex flex-row justify-between">
             <h2>{{ block.name }}</h2>
             <button
@@ -36,6 +175,22 @@
             </button>
           </div>
         </div>
+        <!--        <small>Marketplace</small>-->
+        <!--        <div v-for="asset in templateAssets" :key="asset.id">-->
+        <!--          <div class="flex flex-row justify-between">-->
+        <!--            <h2>{{ asset.name }}</h2>-->
+        <!--            <button-->
+        <!--              @click="-->
+        <!--                () => {-->
+        <!--                  addTemplateBlock(asset.block)-->
+        <!--                  blocksModalOpen = false-->
+        <!--                }-->
+        <!--              "-->
+        <!--            >-->
+        <!--              add-->
+        <!--            </button>-->
+        <!--          </div>-->
+        <!--        </div>-->
       </div>
     </div>
   </div>
@@ -46,22 +201,32 @@
 import 'jointjs/dist/joint.css'
 import Block from '@/models/Block'
 import * as joint from 'jointjs'
-import { dia } from 'jointjs'
 import { useRepo } from 'pinia-orm'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import _ from 'lodash'
 import Port from '@/models/Port'
 import Method from '@/models/Method'
 import Connection from '@/models/Connection'
 import { Stack } from '@/utils/stack'
 import { HighlightFrame } from '@/models/Shapes'
+import * as api from '@/utils/api'
+import MarketplaceAsset from '@/models/MarketplaceAsset'
+import { AxiosError, type AxiosResponse } from 'axios'
 
+const router = useRouter()
+const runner = ref<string | null>(null)
+const runnerLoading = ref(false)
+const runnerParams = ref({})
+const runnerResponse = ref<AxiosResponse | AxiosError | null>(null)
 const container = ref<HTMLElement | null>(null)
 const route = computed(() => useRoute())
 const portRepo = computed(() => useRepo(Port))
 const blockRepo = computed(() => useRepo(Block))
+const assetRepo = computed(() => useRepo(MarketplaceAsset))
 const templateBlocks = computed(() => blockRepo.value.where('method_id', null).get())
+const templateAssets = computed(() => assetRepo.value.all())
+const inspectBlock = ref<Block | null>(null)
 const blocks = computed(() =>
   blockRepo.value
     .where('method_id', route.value.params.method as string)
@@ -74,8 +239,42 @@ const method = computed(() =>
     .find(route.value.params.method as string)
 )
 
+const newOutputName = ref('')
+const newOutputType = ref('string')
+
+const newInputName = ref('')
+const newInputType = ref('string')
+
+function addOutput() {
+  if (!method.value) return
+  Method.addPort(method.value.id, newOutputName.value, newOutputType.value, true).then((block) => {
+    // graph.addCell(blocks.value.find((b) => b.id === block.id)?.buildingShape)
+  })
+}
+
+function addInput() {
+  if (!method.value) return
+  Method.addPort(method.value.id, newInputName.value, newInputType.value, false).then((block) => {
+    // graph.addCell(blocks.value.find((b) => b.id === block.id)?.buildingShape)
+  })
+}
+
+function sendRunner() {
+  runnerLoading.value = true
+  api.post(`/projects/${route.value.params.project}/methods/${route.value.params.method}/exec`, runnerParams.value)
+    .then((r) => runnerResponse.value = r)
+    .catch((e) => runnerResponse.value = e)
+    .finally(() => runnerLoading.value = false)
+}
+
 const blocksModalOpen = ref(false)
 const blocksModalPosition = ref({ x: 0, y: 0 })
+
+const blocksSearch = ref('')
+const blocksSearchResults = computed(() => {
+  return templateBlocks.value.slice().concat(templateAssets.value.map((asset) => asset.block))
+    .filter((block) => block.name?.toLowerCase().includes(blocksSearch.value.toLowerCase()))
+})
 
 console.log('method', method.value.name)
 
@@ -130,6 +329,17 @@ function save() {
   })
 }
 
+function publish() {
+  api.post(`/methods/${method.value.id}/publish`).then((res) => {
+    router.push({
+      name: 'asset',
+      params: {
+        id: res.data.data.id
+      }
+    })
+  })
+}
+
 const namespace = joint.shapes
 
 const graph = new joint.dia.Graph({}, { cellNamespace: namespace })
@@ -140,6 +350,7 @@ let localMousePosition: { x: number; y: number } | null = null
 let highlightElement: joint.dia.ElementView | null = null
 
 function handleMouseMove(e: MouseEvent) {
+
   localMousePosition = { x: e.offsetX, y: e.offsetY }
   if (dragStartPosition) {
     const dx = e.offsetX - dragStartPosition.x
@@ -157,10 +368,11 @@ function offsetToLocalPoint(offsetX, offsetY, paper) {
 }
 
 function handleWheelMove(e: WheelEvent) {
+
   if (!paper?.options?.origin) return
 
   if (e.ctrlKey) {
-    const delta = Math.min(Math.max(e.wheelDelta, -1), 1) / 20
+    const delta = Math.min(Math.max(e.wheelDelta, -1), 1) / 100
     const scale = paper.scale().sx + delta
 
     if (scale <= 0.25 || scale >= 2) return
@@ -341,7 +553,7 @@ onMounted(() => {
     },
 
     // Controls which link connections can be made
-    validateConnection: function (cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+    validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
       // Prevent linking from input ports
       if (magnetS && magnetS.getAttribute('port-group') === 'in') return false
 
@@ -380,7 +592,7 @@ onMounted(() => {
     },
 
     // decide whether to create a link if the user clicks a magnet
-    validateMagnet: function (cellView, magnet) {
+    validateMagnet: function(cellView, magnet) {
       // Prevent links from ports that already have a link
       const port = magnet.getAttribute('port')
       const links = graph.getConnectedLinks(cellView.model, {
@@ -388,7 +600,7 @@ onMounted(() => {
         inbound: true
       })
 
-      const portLinks = _.filter(links, function (o) {
+      const portLinks = _.filter(links, function(o) {
         return o.get('source').port == port || o.get('target').port == port
       })
       if (portLinks.length > 0) return false
@@ -457,7 +669,7 @@ onMounted(() => {
     showLinkTools(linkView)
   })
 
-  paper.on('blank:pointerdown', function (event, x, y) {
+  paper.on('blank:pointerdown', function(event, x, y) {
     console.log('cloick')
 
     if (!paper) return
@@ -476,7 +688,7 @@ onMounted(() => {
     dragStartPosition = { x: coords.x * scale, y: coords.y * scale }
   })
 
-  paper.on('cell:pointerup blank:pointerup', function () {
+  paper.on('cell:pointerup blank:pointerup', function() {
     dragStartPosition = null
   })
 
@@ -484,7 +696,8 @@ onMounted(() => {
     linkView.removeTools()
   })
 
-  paper.on('element:mouseenter', (elementView) => {})
+  paper.on('element:mouseenter', (elementView) => {
+  })
 
   paper.on('element:mouseleave', (elementView) => {
     // elementView.removeTools()
@@ -497,6 +710,21 @@ onMounted(() => {
 
     elementDragStartPosition = { x: position.x, y: position.y }
     console.log('Start drag')
+  })
+
+  paper.on('element:pointerdblclick', (elementView) => {
+    const block = blocks.value.find((block) => block.id === elementView.model.id)
+    if (!block) return
+    inspectBlock.value = block
+    // const asset = templateAssets.value.find((asset) => asset.block.id === block.block_id)
+    // if (!asset) return
+    // router.push({
+    //   name: 'method',
+    //   params: {
+    //     project: route.value.params.project as string,
+    //     method: block.block_id as string
+    //   }
+    // })
   })
 
   paper.on('element:pointerup', (elementView) => {
@@ -532,7 +760,7 @@ onMounted(() => {
     }
   })
 
-  graph.on('change:position', function (cell: any) {
+  graph.on('change:position', function(cell: any) {
     console.log('Position changed')
 
     // block position changed
@@ -549,7 +777,7 @@ onMounted(() => {
     })
   })
 
-  graph.on('change:source change:target', function (link: any) {
+  graph.on('change:source change:target', function(link: any) {
     if (link.get('source').id && link.get('target').id) {
       // both ends of the link are connected.
       const source = link.get('source')
@@ -568,7 +796,7 @@ onMounted(() => {
     }
   })
 
-  graph.on('remove', function (cell: any) {
+  graph.on('remove', function(cell: any) {
     if (cell.isElement()) {
       Block.destroy(cell.id)
     }
@@ -592,6 +820,7 @@ onMounted(() => {
           x: localMousePosition.x,
           y: localMousePosition.y
         }
+        blocksSearch.value = ''
         blocksModalOpen.value = true
       }
 
@@ -650,6 +879,7 @@ onMounted(() => {
   border: 1px solid #000;
   user-select: none;
 }
+
 .available-magnet {
   fill: #5da271;
   stroke: yellow;
